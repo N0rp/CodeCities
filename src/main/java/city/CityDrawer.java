@@ -24,24 +24,63 @@ public class CityDrawer {
 
     public CityDrawer(CityPackage pack){
         this.pack = pack;
-        calculateCity();
     }
 
     private void calculateCity(){
-        this.maxLoc = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getLoc()).max().getAsInt();
-        this.maxMcCabe = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getMcccabe()).max().getAsInt();
-        this.maxNl = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getNl()).max().getAsInt();
+        if(pack.getBuildings().length > 0) {
+            this.maxLoc = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getLoc()).max().getAsInt();
+            this.maxMcCabe = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getMcccabe()).max().getAsInt();
+            this.maxNl = Arrays.stream(pack.getBuildings()).mapToInt(cityBuilding -> cityBuilding.getNl()).max().getAsInt();
+        }
     }
 
-    public void drawPackage(Group root){
-        double buildingX = 0;
-        double buildingY = 0;
+    public void drawPackages(Group root){
+        /*
+        Idea for a simple organization:
+        Each building in a package is organized horizontally.
+        Each subpackage is organized below the root
+        Each root is organized horizontally
+         */
+        double packageX = 0;
+        double packageY = 0;
+        for(CityPackage subPack : pack.getSubPackages()){
+            Point2D upperLeftCorner = new Point2D(packageX, packageY);
+            Point2D bottomRightCorner = drawBuildings(root, subPack, upperLeftCorner);
+            packageX += bottomRightCorner.getX();
+            packageY += bottomRightCorner.getY();
+        }
+    }
+
+    private void drawSingleSubPackage(Group root){
+        double packageX = 0;
+        double packageY = 0;
+        for(CityPackage subPack : pack.getSubPackages()){
+            Point2D upperLeftCorner = new Point2D(packageX, packageY);
+            Point2D bottomRightCorner = drawBuildings(root, subPack, upperLeftCorner);
+            packageX += bottomRightCorner.getX();
+            packageY += bottomRightCorner.getY();
+        }
+    }
+
+    /**
+     * Draw building.
+     * @param root
+     * @param pack
+     * @param upperLeftPackCorner
+     * @return bottom right corner of drawn building
+     */
+    private Point2D drawBuildings(Group root, CityPackage pack, Point2D upperLeftPackCorner){
+        calculateCity();
+        double buildingX = upperLeftPackCorner.getX();
+        double buildingY = upperLeftPackCorner.getY();
         for(CityBuilding building : pack.getBuildings()){
             Point2D upperLeftCorner = new Point2D(buildingX, buildingY);
-            Point2D bottomRightCorner = drawBuilding(root, building, upperLeftCorner);
+            Point2D bottomRightCorner = drawSingleBuilding(root, building, upperLeftCorner);
             buildingX += bottomRightCorner.getX();
             buildingY += bottomRightCorner.getY();
         }
+        Point2D bottomRightPackCorner = new Point2D(buildingX, buildingY);
+        return bottomRightPackCorner;
     }
 
     /**
@@ -51,7 +90,7 @@ public class CityDrawer {
      * @param translate
      * @return bottom right corner of drawn building
      */
-    private Point2D drawBuilding(Group root, final CityBuilding building, Point2D translate){
+    private Point2D drawSingleBuilding(Group root, final CityBuilding building, Point2D translate){
         double size = ((double)building.getLoc()) / maxLoc * maxBuildingSize;
         double height = ((double)building.getMcccabe()) / maxMcCabe * getMaxBuildingHeight;
         Color boxColor = getNlColor(building.getNl());

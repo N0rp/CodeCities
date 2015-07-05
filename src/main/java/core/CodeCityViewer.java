@@ -3,6 +3,7 @@ package core;
 import city.CityBuilding;
 import city.CityDrawer;
 import city.CityPackage;
+import city.MockCityPackageFactory;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.*;
@@ -69,12 +70,8 @@ public class CodeCityViewer extends Application {
         buildCamera(root);
 
         // Build the Scene Graph
-        CityBuilding building = new CityBuilding("foo", 700, 100, 0);
-        CityBuilding building2 = new CityBuilding("bar", 400, 50, 50);
-        CityBuilding building3 = new CityBuilding("gaa", 1000, 10, 100);
-        CityPackage pack = new CityPackage("Something", building, building2, building3);
-        CityDrawer city = new CityDrawer(pack);
-        city.drawPackage(root);
+        CityDrawer city = new CityDrawer(MockCityPackageFactory.getMediumSizePackage());
+        city.drawPackages(root);
 
         // Use a SubScene
         SubScene subScene = new SubScene(root, 300,300);
