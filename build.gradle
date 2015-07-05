@@ -1,0 +1,39 @@
+
+/*
+ * This is a Gradle build file:
+ * - Gradle Homepage: http://gradle.org/
+ * - Gradle Documentation: http://gradle.org/documentation
+ * - View tasks for this project: $ gradlew tasks
+ */
+
+group 'eu.dowsing'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'checkstyle'
+
+allprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '8.40.9'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile files('lib/leap/LeapJava.jar')
+}
