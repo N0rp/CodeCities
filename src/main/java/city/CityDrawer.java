@@ -51,16 +51,26 @@ public class CityDrawer {
      * @param translate
      * @return bottom right corner of drawn building
      */
-    private Point2D drawBuilding(Group root, CityBuilding building, Point2D translate){
+    private Point2D drawBuilding(Group root, final CityBuilding building, Point2D translate){
         double size = ((double)building.getLoc()) / maxLoc * maxBuildingSize;
-        double height = building.getMcccabe() / maxMcCabe * getMaxBuildingHeight;
+        double height = ((double)building.getMcccabe()) / maxMcCabe * getMaxBuildingHeight;
+        Color boxColor = getNlColor(building.getNl());
+
         Box testBox = new Box(size, height, size);
-        testBox.setMaterial(new PhongMaterial(getNlColor(building.getNl())));
+        testBox.setMaterial(new PhongMaterial(boxColor));
         testBox.setTranslateX(translate.getX());
-        testBox.setTranslateY(translate.getY());
+        testBox.setTranslateY(testBox.getHeight() / 2);
+        //testBox.setTranslateY(translate.getY());
         root.getChildren().addAll(testBox);
 
-        Point2D bottomRightCorner = new Point2D(testBox.getLayoutX() + testBox.getWidth(), testBox.getLayoutY() + testBox.getDepth());
+        testBox.setOnMouseEntered(me -> {
+            testBox.setMaterial(new PhongMaterial(Color.AQUA));
+        });
+        testBox.setOnMouseExited(me -> {
+            testBox.setMaterial(new PhongMaterial(getNlColor(building.getNl())));
+        });
+
+        Point2D bottomRightCorner = new Point2D(translate.getX() + size, translate.getY() + size);
         return bottomRightCorner;
     }
 
