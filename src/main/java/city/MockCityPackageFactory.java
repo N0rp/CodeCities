@@ -28,16 +28,16 @@ public class MockCityPackageFactory {
     }
 
     public static CityPackage[] getMediumSizePackage(){
-        CityBuilding buildingA1 = new CityBuilding("foo", 700, 100, 0);
-        CityBuilding buildingA2 = new CityBuilding("bar", 400, 50, 50);
-        CityBuilding buildingA3 = new CityBuilding("gaa", 1000, 10, 100);
-        CityPackage subPackA = new CityPackage("Level 2", buildingA1, buildingA2, buildingA3);
+        CityBuilding buildingA1 = new CityBuilding("Level A 1", 700, 100, 0);
+        CityBuilding buildingA2 = new CityBuilding("Level A 2", 400, 50, 50);
+        CityBuilding buildingA3 = new CityBuilding("Level A 3", 1000, 10, 100);
+        CityPackage subPackA = new CityPackage("Level A", buildingA1, buildingA2, buildingA3);
 
-        CityBuilding buildingB1 = new CityBuilding("foo", 100, 100, 10);
-        CityBuilding buildingB2 = new CityBuilding("bar", 300, 200, 20);
-        CityPackage subPackB = new CityPackage("Level 1", buildingB1, buildingB2);
+        CityBuilding buildingB1 = new CityBuilding("Level B 1", 100, 100, 10);
+        CityBuilding buildingB2 = new CityBuilding("Level B 2", 300, 200, 20);
+        CityPackage subPackB = new CityPackage("Level B", buildingB1, buildingB2);
 
-        CityBuilding buildingRoot1 = new CityBuilding("bar", 900, 100, 50);
+        CityBuilding buildingRoot1 = new CityBuilding("RootBuilding", 900, 100, 50);
         CityPackage rootPackage = new CityPackage("Root", buildingRoot1);
 
         subPackA.addSubPackage(subPackB);
