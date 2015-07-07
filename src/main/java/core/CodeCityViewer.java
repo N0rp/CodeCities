@@ -1,21 +1,14 @@
 package core;
 
-import city.CityBuilding;
-import city.CityDrawer;
-import city.CityPackage;
+import cityview.CityBundle;
+import cityview.CityView;
 import city.MockCityPackageFactory;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.PickResult;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.DrawMode;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
 /**
@@ -70,8 +63,10 @@ public class CodeCityViewer extends Application {
         buildCamera(root);
 
         // Build the Scene Graph
-        CityDrawer city = new CityDrawer(MockCityPackageFactory.getMediumSizePackage());
-        city.drawPackages(root);
+        CityView city = new CityView(MockCityPackageFactory.getMediumSizePackage());
+        CityBundle cityBundle = city.createCityBundle();
+        city.setCityBundle(cityBundle);
+        root.getChildren().addAll(city);
 
         // Use a SubScene
         SubScene subScene = new SubScene(root, 300,300);
@@ -125,10 +120,9 @@ public class CodeCityViewer extends Application {
         });
         scene.setOnMouseDragged(me -> moveCamera(me));
         scene.setOnScroll(se -> {
+            final double scalingFactor = 10;
             double cameraZ = se.getDeltaY();
-
-            System.out.println(cameraZ + "");
-            camera.setTranslateZ(cameraZ);
+            camera.setTranslateZ( camera.getTranslateZ() + (scalingFactor * cameraZ));
         });
     }
 
