@@ -37,7 +37,6 @@ public class MockCityPackageFactory {
         CityBuilding buildingB2 = new CityBuilding("bar", 300, 200, 20);
         CityPackage subPackB = new CityPackage("Level 1", buildingB1, buildingB2);
 
-
         CityBuilding buildingRoot1 = new CityBuilding("bar", 900, 100, 50);
         CityPackage rootPackage = new CityPackage("Root", buildingRoot1);
 

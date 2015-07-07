@@ -22,26 +22,26 @@ public class CodeCityViewer extends Application {
     private static final double ROTATION_SPEED = 2.0;
     private static final double TRACK_SPEED = 0.3;
 
-    double mousePosX;
-    double mousePosY;
-    double mouseOldX;
-    double mouseOldY;
-    double mouseDeltaX;
+    private double mousePosX;
+    private double mousePosY;
+    private double mouseOldX;
+    private double mouseOldY;
+    private double mouseDeltaX;
 
     private final static int modifierFactor = 1;
 
-    double mouseDeltaY;
+    private double mouseDeltaY;
     private static final double CAMERA_INITIAL_DISTANCE = -1000;
     private static final double CAMERA_INITIAL_X_ANGLE = 20.0;
     private static final double CAMERA_INITIAL_Y_ANGLE = 0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
     private static final double CAMERA_FAR_CLIP = 10000.0;
 
-    final PerspectiveCamera camera = new PerspectiveCamera(true);
-    final Xform world = new Xform();
-    final Xform cameraXform = new Xform();
-    final Xform cameraXform2 = new Xform();
-    final Xform cameraXform3 = new Xform();
+    private final PerspectiveCamera camera = new PerspectiveCamera(true);
+    private final Xform world = new Xform();
+    private final Xform cameraXform = new Xform();
+    private final Xform cameraXform2 = new Xform();
+    private final Xform cameraXform3 = new Xform();
 
     private void buildCamera(Group root) {
         root.getChildren().add(cameraXform);
@@ -64,12 +64,10 @@ public class CodeCityViewer extends Application {
 
         // Build the Scene Graph
         CityView city = new CityView(MockCityPackageFactory.getMediumSizePackage());
-        CityBundle cityBundle = city.createCityBundle();
-        city.setCityBundle(cityBundle);
         root.getChildren().addAll(city);
 
         // Use a SubScene
-        SubScene subScene = new SubScene(root, 300,300);
+        SubScene subScene = new SubScene(root, 300, 300, true, SceneAntialiasing.BALANCED);
         handleMouse(subScene, world);
         subScene.setFill(Color.ALICEBLUE);
         subScene.setCamera(camera);
@@ -81,6 +79,7 @@ public class CodeCityViewer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         primaryStage.setResizable(false);
         buildWorld();
         Scene scene = new Scene(world);
@@ -92,31 +91,42 @@ public class CodeCityViewer extends Application {
 
     private void handleKeyboard(Scene scene, final Node root) {
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                switch (event.getCode()) {
-                    case Z:
-                        cameraXform2.t.setX(0.0);
-                        cameraXform2.t.setY(0.0);
-                        cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
-                        cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
-                        break;
-                } // switch
-            } // handle()
-        });  // setOnKeyPressed
-    }  //  handleKeyboard()
+        scene.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case Z:
+                    cameraXform2.t.setX(0.0);
+                    cameraXform2.t.setY(0.0);
+                    cameraXform.ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
+                    cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
+                    break;
+                case UP:
+                case W:
+                    cameraXform2.t.setZ(cameraXform2.t.getZ() + 10);
+                    break;
+                case DOWN:
+                case S:
+                    cameraXform2.t.setZ(cameraXform2.t.getZ() - 10);
+                    break;
+                case LEFT:
+                case A:
+                    cameraXform2.t.setX(cameraXform2.t.getX() + 10);
+                    break;
+                case RIGHT:
+                case D:
+                    cameraXform2.t.setX(cameraXform2.t.getX() - 10);
+                    break;
+            }
+        });
+    }
 
 
 
     private void handleMouse(SubScene scene, final Node root) {
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override public void handle(MouseEvent me) {
-                mousePosX = me.getSceneX();
-                mousePosY = me.getSceneY();
-                mouseOldX = me.getSceneX();
-                mouseOldY = me.getSceneY();
-            }
+        scene.setOnMousePressed(me -> {
+            mousePosX = me.getSceneX();
+            mousePosY = me.getSceneY();
+            mouseOldX = me.getSceneX();
+            mouseOldY = me.getSceneY();
         });
         scene.setOnMouseDragged(me -> moveCamera(me));
         scene.setOnScroll(se -> {
