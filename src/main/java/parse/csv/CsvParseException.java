@@ -9,8 +9,18 @@ public class CsvParseException extends Exception{
         super(CsvParseException.createExpectedHeaderValueMessage(index, actualValue, expectedValue));
     }
 
-    public CsvParseException(int row, int index, String value, Class expectedType){
-        super(CsvParseException.createExpectedTypeMessage(row, index, value, expectedType));
+    public CsvParseException(String row, HeaderEnum headerEnum){
+        super(CsvParseException.createRowMissingValueMessage(row, headerEnum));
+    }
+
+    public CsvParseException(String row, HeaderEnum headerEnum, String value, Class expectedType){
+        super(CsvParseException.createExpectedTypeMessage(row, headerEnum, value, expectedType));
+    }
+
+    private static String createRowMissingValueMessage(String row, HeaderEnum headerEnum){
+        String message = String.format("The string in row %s with enum %s is missing.",
+                row, headerEnum);
+        return message;
     }
 
     private static String createExpectedHeaderValueMessage(int index, String actualValue, String expectedValue){
@@ -19,9 +29,9 @@ public class CsvParseException extends Exception{
         return message;
     }
 
-    private static String createExpectedTypeMessage(int row, int index, String value, Class expectedType){
-        String message = String.format("The string in row %d at index %d with value %s had the wrong type. Expected %s.",
-                row, index, value, expectedType);
+    private static String createExpectedTypeMessage(String row, HeaderEnum headerEnum, String value, Class expectedType){
+        String message = String.format("The string in row %s with enum %s with value %s had the wrong type. Expected %s.",
+                row, headerEnum, value, expectedType);
         return message;
     }
 }

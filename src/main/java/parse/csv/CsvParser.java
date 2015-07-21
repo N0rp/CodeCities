@@ -44,6 +44,7 @@ public class CsvParser {
                             int index = tuple.index;
                             lineMap.put(headerEnum, split[index]);
                         }
+                        lineMap.put(HeaderEnum.ROW_NUMBER, row+"");
                         if(lineMap.size() > 0){
                             fileMap.add(lineMap);
                         }
@@ -70,24 +71,6 @@ public class CsvParser {
 
         return fileMap;
     }
-
-    private double getDouble(int row, String[] array, int index) throws CsvParseException {
-        double result = -1;
-        try{
-            String str = array[index].replace("\"", "");
-            result = Double.parseDouble(str);
-        }catch (NumberFormatException e){
-            throw new CsvParseException(row, index, array[index], Integer.class);
-        }
-
-        return result;
-    }
-
-    private String getString(String[] array, int index){
-        String str = array[index].replace("\"", "");
-        return str;
-    }
-
 
     private void verifyHeader(String[] header, MappingTuple[] mappingTuples) throws CsvParseException {
         for (MappingTuple pair : mappingTuples){

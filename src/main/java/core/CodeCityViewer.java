@@ -1,5 +1,6 @@
 package core;
 
+import city.CityPackage;
 import cityview.CityBundle;
 import cityview.CityView;
 import city.MockCityPackageFactory;
@@ -10,6 +11,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import parse.csv.CsvParseException;
+import parse.sourcemeter.SourceMeterPackageReader;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Richard on 6/7/2015.
@@ -63,7 +69,8 @@ public class CodeCityViewer extends Application {
         buildCamera(root);
 
         // Build the Scene Graph
-        CityView city = new CityView(MockCityPackageFactory.getMediumSizePackage());
+        //CityView city = new CityView(Arrays.asList(MockCityPackageFactory.getMediumSizePackage()));
+        CityView city = new CityView(getSourceMeterRootPackages());
         root.getChildren().addAll(city);
 
         // Use a SubScene
@@ -75,6 +82,20 @@ public class CodeCityViewer extends Application {
         Group group = new Group();
         group.getChildren().add(subScene);
         world.getChildren().addAll(subScene);
+    }
+
+    public static final String PATH_SOURCE_METER_METHOD = "src/main/resources/log4j-1.2.17-Method.csv";
+    public static final String PATH_SOURCE_METER_CLASS = "src/main/resources/log4j-1.2.17-Class.csv";
+    public static final String PATH_SOURCE_METER_PACKAGE = "src/main/resources/log4j-1.2.17-Package.csv";
+
+    private List<CityPackage> getSourceMeterRootPackages() throws CsvParseException {
+        SourceMeterPackageReader sourceMeterPackageReader = new SourceMeterPackageReader(
+                PATH_SOURCE_METER_PACKAGE,
+                PATH_SOURCE_METER_CLASS,
+                PATH_SOURCE_METER_METHOD);
+        List<CityPackage> cityPackages = sourceMeterPackageReader.createCityPackages();
+
+        return cityPackages;
     }
 
     @Override

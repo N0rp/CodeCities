@@ -28,15 +28,15 @@ public class CityView extends Group{
     private int maxBuildingSize = 100;
     private int getMaxBuildingHeight = 100;
 
-    public CityView(CityPackage[] rootPackages){
+    public CityView(List<CityPackage> rootPackages){
         setData(rootPackages);
         setCityBundle(createCityBundle());
     }
 
-    private void setData(CityPackage[] rootPackages){
-        this.rootPackages = new CityPackageView[rootPackages.length];
-        for(int i = 0; i < rootPackages.length; i++){
-            this.rootPackages[i] = new CityPackageView(rootPackages[i]);
+    private void setData(List<CityPackage> rootPackages){
+        this.rootPackages = new CityPackageView[rootPackages.size()];
+        for(int i = 0; i < rootPackages.size(); i++){
+            this.rootPackages[i] = new CityPackageView(rootPackages.get(i));
         }
     }
 

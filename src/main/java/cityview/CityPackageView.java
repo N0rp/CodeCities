@@ -58,9 +58,9 @@ public class CityPackageView extends Group{
         }
         getChildren().addAll(subPackages);
 
-        buildings = new CityBuildingView[cityPackage.getBuildings().length];
-        for(int i = 0; i < cityPackage.getBuildings().length; i++){
-            CityBuilding cityBuilding = cityPackage.getBuildings()[i];
+        buildings = new CityBuildingView[cityPackage.getBuildings().size()];
+        for(int i = 0; i < cityPackage.getBuildings().size(); i++){
+            CityBuilding cityBuilding = cityPackage.getBuildings().get(i);
             buildings[i] = new CityBuildingView(cityBuilding);
         }
         getChildren().addAll(buildings);
