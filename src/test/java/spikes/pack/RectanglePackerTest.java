@@ -3,6 +3,7 @@ package spikes.pack;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
+import javafx.scene.shape.Shape;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,12 +30,12 @@ public class RectanglePackerTest {
         Rectangle[] rectangles = new Rectangle[]{rectA};
 
 
-        RectanglePacker rectanglePacker = new RectanglePacker();
-        List<Rectangle> packedRectangles = rectanglePacker.pack(Arrays.asList(rectangles), 100);
+        RectanglePacker rectanglePacker = new RectanglePacker(Arrays.asList(rectangles));
+        List<RectangleRow> packedRectangles = rectanglePacker.pack();
 
         Assert.assertEquals(1, packedRectangles.size());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getY());
+
+        assertIsSquare(packedRectangles);
     }
 
     @Test
@@ -59,15 +60,12 @@ public class RectanglePackerTest {
 
         Rectangle[] rectangles = new Rectangle[]{rectA, rectB};
 
-        RectanglePacker rectanglePacker = new RectanglePacker();
-        List<Rectangle> packedRectangles = rectanglePacker.pack(Arrays.asList(rectangles), 200);
+        RectanglePacker rectanglePacker = new RectanglePacker(Arrays.asList(rectangles));
+        List<RectangleRow> packedRectangles = rectanglePacker.pack();
 
         Assert.assertEquals(2, packedRectangles.size());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getY());
 
-        Assert.assertEquals(100, (int)packedRectangles.get(1).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(1).getY());
+        assertIsSquare(packedRectangles);
     }
 
     @Test
@@ -94,15 +92,12 @@ public class RectanglePackerTest {
         Rectangle[] rectangles = new Rectangle[]{rectA, rectB};
 
 
-        RectanglePacker rectanglePacker = new RectanglePacker();
-        List<Rectangle> packedRectangles = rectanglePacker.pack(Arrays.asList(rectangles), 100);
+        RectanglePacker rectanglePacker = new RectanglePacker(Arrays.asList(rectangles));
+        List<RectangleRow> packedRectangles = rectanglePacker.pack();
 
         Assert.assertEquals(2, packedRectangles.size());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getY());
 
-        Assert.assertEquals(0, (int)packedRectangles.get(1).getX());
-        Assert.assertEquals(100, (int)packedRectangles.get(1).getY());
+        assertIsSquare(packedRectangles);
     }
 
     @Test
@@ -138,16 +133,34 @@ public class RectanglePackerTest {
         Rectangle[] rectangles = new Rectangle[]{rectA, rectB, rectC};
 
 
-        RectanglePacker rectanglePacker = new RectanglePacker();
-        List<Rectangle> packedRectangles = rectanglePacker.pack(Arrays.asList(rectangles), 200);
+        RectanglePacker rectanglePacker = new RectanglePacker(Arrays.asList(rectangles));
+        List<RectangleRow> packedRectangles = rectanglePacker.pack();
 
         Assert.assertEquals(3, packedRectangles.size());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(0).getY());
-        Assert.assertEquals(100, (int)packedRectangles.get(1).getX());
-        Assert.assertEquals(0, (int)packedRectangles.get(1).getY());
-        Assert.assertEquals(0, (int)packedRectangles.get(2).getX());
-        Assert.assertEquals(100, (int)packedRectangles.get(2).getY());
+
+        assertIsSquare(packedRectangles);
     }
+
+    private void assertIsSquare(List<RectangleRow> packedRectangles){
+        Rectangle bounds = getPackedBounds(packedRectangles);
+        Assert.assertEquals((int)bounds.getWidth(), (int)bounds.getHeight());
+    }
+
+     private Rectangle getPackedBounds(List<RectangleRow> packedRectangles){
+         Rectangle bounds = new Rectangle();
+         for(RectangleRow row : packedRectangles){
+             for(Rectangle rectangle : row.getRectangles()){
+
+                 if(rectangle.getX() + rectangle.getWidth() > bounds.getWidth()){
+                     bounds.setWidth(rectangle.getX() + rectangle.getWidth());
+                 }
+                 if(rectangle.getY() + rectangle.getHeight() > bounds.getHeight()){
+                     bounds.setHeight(rectangle.getY() + rectangle.getHeight());
+                 }
+             }
+         }
+
+         return bounds;
+     }
 
 }

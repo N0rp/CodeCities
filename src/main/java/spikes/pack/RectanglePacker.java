@@ -12,9 +12,18 @@ import java.util.ListIterator;
  */
 public class RectanglePacker {
 
-    public List<Rectangle> pack(List<Rectangle> rectangles, double maxWidth){
+    private List<Rectangle> rectangles;
+
+    public RectanglePacker(List<Rectangle> rectangles){
+        this.rectangles = rectangles;
+    }
+
+    public List<RectangleRow> pack(){
         List<Rectangle> remainingRectangles = new LinkedList<>(rectangles);
-        List<Rectangle> packedRectangles = new LinkedList<>();
+        List<RectangleRow> packedRectangles = new LinkedList<>();
+
+        double size = getPackedSize();
+        double maxWidth = Math.sqrt(size);
 
         double currentHeight = 0;
         for(ListIterator<Rectangle> iterator = remainingRectangles.listIterator(); iterator.hasNext();){
@@ -23,8 +32,8 @@ public class RectanglePacker {
 
             List<Rectangle> rectangleRow = removeSimilarShapeRectangles(iterator, maxWidth - rectangle.getWidth());
             rectangleRow.add(0, rectangle);
-            packRectanglesWithoutSpace(rectangleRow, currentHeight);
-            packedRectangles.addAll(rectangleRow);
+            RectangleRow row = new RectangleRow(rectangleRow, currentHeight, maxWidth);
+            packedRectangles.add(row);
             Rectangle maxHeightRectangle = rectangleRow.stream().max((rectA, rectB) -> Double.compare(rectA.getHeight(), rectB.getHeight())).get();
             currentHeight += maxHeightRectangle.getHeight();
         }
@@ -51,13 +60,9 @@ public class RectanglePacker {
         return similarShapeRectangles;
     }
 
-    private void packRectanglesWithoutSpace(List<Rectangle> rectangleRow, double rectangleY){
-        double rectangleX = 0;
-        for(Rectangle rectangle : rectangleRow){
-            rectangle.setX(rectangleX);
-            rectangle.setY(rectangleY);
-            rectangleX += rectangle.getWidth();
-        }
+    public double getPackedSize(){
+        double size = rectangles.stream().mapToDouble(rectangle -> rectangle.getHeight() * rectangle.getWidth()).sum();
+        return size;
     }
 
 }

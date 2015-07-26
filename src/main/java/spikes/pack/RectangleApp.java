@@ -52,11 +52,31 @@ public class RectangleApp extends Application {
                 .fill(Color.RED)
                 .build();
 
-        Rectangle[] rectangles = new Rectangle[]{rectA, rectB, rectC};
+        Rectangle rectD = RectangleBuilder.create()
+                .x(250)
+                .y(50)
+                .width(50)
+                .height(50)
+                .arcWidth(20)
+                .arcHeight(20)
+                .fill(Color.PURPLE)
+                .build();
+
+        Rectangle rectE = RectangleBuilder.create()
+                .x(250)
+                .y(50)
+                .width(150)
+                .height(150)
+                .arcWidth(5)
+                .arcHeight(5)
+                .fill(Color.BROWN)
+                .build();
+
+        Rectangle[] rectangles = new Rectangle[]{rectA, rectB, rectC, rectD, rectE};
 
 
-        RectanglePacker rectanglePacker = new RectanglePacker();
-        List<Rectangle> packedRectangles = rectanglePacker.pack(Arrays.asList(rectangles), 200);
+        RectanglePacker rectanglePacker = new RectanglePacker(Arrays.asList(rectangles));
+        List<RectangleRow> packedRectangles = rectanglePacker.pack();
 
         root.getChildren().addAll(packedRectangles);
 
