@@ -1,15 +1,12 @@
 package parse.sourcemeter;
 
-import city.CityBuilding;
-import city.CityPackage;
+import graph.Leaf;
+import graph.Node;
 import parse.csv.CsvParseException;
 import parse.csv.CsvParser;
 import parse.csv.HeaderEnum;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Richard on 7/21/2015.
@@ -26,60 +23,76 @@ public class SourceMeterPackageReader {
         this.methodPath = methodPath;
     }
 
-    public List<CityPackage> createCityPackages() throws CsvParseException {
+    public List<Node> createCityPackages() throws CsvParseException {
         CsvParser csvParser = new CsvParser();
         List<Map<HeaderEnum, String>> packageMappings = csvParser.parse(packagePath, SourceMeterMappings.packageMappings);
         List<Map<HeaderEnum, String>> classMappings = csvParser.parse(classPath, SourceMeterMappings.classMappings);
         List<Map<HeaderEnum, String>> methodMappings = csvParser.parse(methodPath, SourceMeterMappings.methodMappings);
 
-        List<CityPackage> cityPackages = createCityPackages(packageMappings, classMappings, methodMappings);
+        List<Node> nodes = createCityPackages(packageMappings, classMappings, methodMappings);
 
-        return cityPackages;
+        return nodes;
     }
 
-    private List<CityPackage> createCityPackages(List<Map<HeaderEnum, String>> packageMappings,
+    private List<Node> createCityPackages(List<Map<HeaderEnum, String>> packageMappings,
                                                  List<Map<HeaderEnum, String>> classMappings,
                                                  List<Map<HeaderEnum, String>> methodMappings) throws CsvParseException {
-        List<CityPackage> cityPackages = new LinkedList<>();
+        List<Node> nodes = new LinkedList<>();
 
         for(Map<HeaderEnum, String> packageMapping : packageMappings){
-            List<CityBuilding> cityBuildings = new LinkedList<>();
+            List<Leaf> leafs = new LinkedList<>();
             String packageId = packageMapping.get(HeaderEnum.ID);
             List<Map<HeaderEnum, String>> matchingClassMappings = removeChildMappings(packageId, classMappings);
             for(Map<HeaderEnum, String> matchingClassMapping : matchingClassMappings){
                 String classId = matchingClassMapping.get(HeaderEnum.ID);
                 List<Map<HeaderEnum, String>> matchingMethodMappings = removeChildMappings(classId, methodMappings);
 
-                CityBuilding cityBuilding = createCityBuilding(matchingClassMapping, matchingMethodMappings);
-                cityBuildings.add(cityBuilding);
+                Leaf leaf = createCityBuilding(matchingClassMapping, matchingMethodMappings);
+                leafs.add(leaf);
             }
-            CityPackage cityPackage = createCityPackage(packageMapping, cityBuildings);
-            cityPackages.add(cityPackage);
+            Node node = createCityPackage(packageMapping, leafs);
+            nodes.add(node);
         }
 
-        return cityPackages;
+        return nodes;
     }
 
-    private CityPackage createCityPackage(Map<HeaderEnum, String> packageMapping,
-                                            List<CityBuilding> cityBuildings) throws CsvParseException {
+    private Node createCityPackage(Map<HeaderEnum, String> packageMapping,
+                                            List<Leaf> leafs) throws CsvParseException {
         String name = getString(packageMapping, HeaderEnum.NAME);
 
-        CityPackage cityPackage = new CityPackage(name, cityBuildings);
+        Node node = new Node(name, leafs);
 
-        return cityPackage;
+        return node;
     }
 
-    private CityBuilding createCityBuilding(Map<HeaderEnum, String> classMapping,
+    private Leaf createCityBuilding(Map<HeaderEnum, String> classMapping,
                                                    List<Map<HeaderEnum, String>> methodMappings) throws CsvParseException {
-        CityBuilding cityBuilding = null;
+        Leaf leaf = null;
 
         String name = getString(classMapping, HeaderEnum.NAME);
         int loc = (int)getDouble(classMapping, HeaderEnum.LINES_OF_CODE);
         int nl = (int)getDouble(classMapping, HeaderEnum.NESTING_LEVEL);
 
-        cityBuilding = new CityBuilding(name, loc, 10, nl);
+        leaf = new Leaf(name, convertNumbers(classMapping));
 
-        return cityBuilding;
+        return leaf;
+    }
+
+    private Map<String, Double> convertNumbers(Map<HeaderEnum, String> enumToString){
+        Map<String, Double> stringToDouble = new HashMap<>();
+        for (Map.Entry<HeaderEnum, String> entry : enumToString.entrySet())
+        {
+            System.out.println(entry.getKey() + "/" + entry.getValue());
+            try
+            {
+                double d = Double.parseDouble(entry.getValue());
+                stringToDouble.put(entry.getKey().toString(), d);
+            }
+            catch(NumberFormatException nfe) { }
+        }
+
+        return stringToDouble;
     }
 
     private void verifyNotNull(Map<HeaderEnum, String> mapping, HeaderEnum headerEnum) throws CsvParseException {

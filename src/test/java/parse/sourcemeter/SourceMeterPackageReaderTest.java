@@ -1,6 +1,6 @@
 package parse.sourcemeter;
 
-import city.CityPackage;
+import graph.Node;
 import org.junit.Assert;
 import org.junit.Test;
 import parse.csv.CsvParseException;
@@ -20,9 +20,9 @@ public class SourceMeterPackageReaderTest {
                 CsvParserTest.PATH_SOURCE_METER_PACKAGE,
                 CsvParserTest.PATH_SOURCE_METER_CLASS,
                 CsvParserTest.PATH_SOURCE_METER_METHOD);
-        List<CityPackage> cityPackages = sourceMeterPackageReader.createCityPackages();
-        Assert.assertNotNull(cityPackages);
-        Assert.assertNotEquals(0, cityPackages.size());
+        List<Node> nodes = sourceMeterPackageReader.createCityPackages();
+        Assert.assertNotNull(nodes);
+        Assert.assertNotEquals(0, nodes.size());
 
 
     }
