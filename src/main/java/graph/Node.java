@@ -25,8 +25,8 @@ public class Node {
     private List<Leaf> leaves;
     private List<Node> nodes;
 
-    public Node(String packageName, Leaf... buildings){
-        this(packageName, Arrays.asList(buildings));
+    public Node(String packageName, Leaf... leaves){
+        this(packageName, Arrays.asList(leaves));
     }
 
     public Node(String packageName, List<Leaf> leaves){
@@ -53,7 +53,9 @@ public class Node {
         return metricNames;
     }
 
-    public void addSubPackage(Node node){
-        this.nodes.add(node);
+    public void addSubNodes(Node... nodes){
+        if(nodes.length > 0) {
+            this.nodes.addAll(Arrays.asList(nodes));
+        }
     }
 }

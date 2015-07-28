@@ -14,18 +14,18 @@ public class BasicCityPacker implements CityPacker{
 
         double maxWidthMetric = Math.sqrt(maxSizeMetric);
 
-        double currentHeight = 0;
+        double currentDepth = 0;
+        BuildingRowPacker rowPacker = new BuildingRowPacker();
         for(ListIterator<Building> iterator = remainingRectangles.listIterator(); iterator.hasNext();){
             Building building = iterator.next();
             iterator.remove();
 
             List<Building> buildingsInRow = removeBuildingsThatFitIntoWidth(iterator, maxWidthMetric - building.getWidth());
             buildingsInRow.add(0, building);
-            BuildingRowPacker rowPacker = new BuildingRowPacker();
-            rowPacker.arrangeAndResizeBuildings(buildingsInRow, currentHeight, maxWidthMetric);
+            rowPacker.arrangeAndResizeBuildings(buildingsInRow, currentDepth, maxWidthMetric);
 
-            double maxHeight = rowPacker.getMaxDepth(buildingsInRow);
-            currentHeight += maxHeight;
+            double maxDepth = rowPacker.getMaxDepth(buildingsInRow);
+            currentDepth += maxDepth;
         }
     }
 

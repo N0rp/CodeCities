@@ -10,6 +10,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static cityview.CityBoundsUtil.*;
+
 /**
  * Created by Richard on 7/22/2015.
  */
@@ -32,6 +34,7 @@ public class BasicCityPackerTest {
         assertIsSquare(block);
     }
 
+    @Test
     public void testArrangeBlock_TwoBuildingsInOneRow_Success() {
         /*
             A, B
@@ -49,6 +52,7 @@ public class BasicCityPackerTest {
         assertIsSquare(block);
     }
 
+    @Test
     public void testArrangeBlock_TwoBuildingsInTwoRows_Success() {
         /*
             A
@@ -64,26 +68,7 @@ public class BasicCityPackerTest {
         CityPacker cityPacker = new BasicCityPacker();
         cityPacker.arrangeBlock(block, 100);
 
-        assertIsSquare(block);
+        assertIsRectangle(block, 10, 20);
     }
-
-    private void assertIsSquare(Block block){
-        Rectangle bounds = getBuildingBounds(block.getBuildings());
-        Assert.assertEquals((int)bounds.getWidth(), (int)bounds.getHeight());
-    }
-
-     private Rectangle getBuildingBounds(List<Building> buildings){
-         Rectangle bounds = new Rectangle();
-         for(Building building : buildings){
-             if(building.getLayoutX() + building.getWidth() > bounds.getWidth()){
-                 bounds.setWidth(building.getLayoutX() + building.getWidth());
-             }
-             if(building.getLayoutY() + building.getDepth() > bounds.getHeight()){
-                 bounds.setHeight(building.getLayoutY() + building.getDepth());
-             }
-         }
-
-         return bounds;
-     }
 
 }

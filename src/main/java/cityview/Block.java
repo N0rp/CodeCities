@@ -101,9 +101,10 @@ public class Block extends Group{
         }
 
         double maxSize = getMaxMetric(sizeMetricName);
-        ground.setWidth(maxSize);
-        ground.setHeight(maxSize);
-        ground.setDepth(5);
+        double maxWidth = Math.sqrt(maxSize);
+        ground.setWidth(maxWidth);
+        ground.setHeight(5);
+        ground.setDepth(maxWidth);
     }
 
     public void setHeightMetricName(String heightMetricName){
@@ -138,6 +139,25 @@ public class Block extends Group{
         return this.colorMetricName;
     }
 
+    public double getSumMetric(String metricName){
+        double sumMetric = 0;
+        double sumBuildingMetric = 0;
+        double sumBlockMetric = 0;
+
+        if(buildings.size() > 0) {
+            sumBuildingMetric = buildings.stream().mapToDouble(
+                    building -> building.getLeaf().getMetric(metricName))
+                    .sum();
+        }
+        if (blocks.size() > 0) {
+            sumBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.getSumMetric(metricName)).sum();
+        }
+
+        sumMetric = sumBlockMetric + sumBuildingMetric;
+
+        return sumMetric;
+    }
+
     public double getMaxMetric(String metricName){
         double maxMetric = 0;
         double maxBuildingMetric = 0;
@@ -145,12 +165,12 @@ public class Block extends Group{
 
         if(buildings.size() > 0) {
             maxBuildingMetric = buildings.stream().mapToDouble(
-                    cityBuilding -> cityBuilding.getLeaf().getMetric(metricName))
+                    building -> building.getLeaf().getMetric(metricName))
                     .max()
                     .getAsDouble();
         }
         if (blocks.size() > 0) {
-            maxBlockMetric = blocks.stream().mapToDouble(subPackage -> subPackage.getMaxMetric(metricName)).max().getAsDouble();
+            maxBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.getMaxMetric(metricName)).max().getAsDouble();
         }
 
         maxMetric = Math.max(maxBuildingMetric, maxBlockMetric);
@@ -174,5 +194,21 @@ public class Block extends Group{
         for(Building building : buildings){
             building.normalizeColorMetric(maxColorMetric);
         }
+    }
+
+    public int getTotalBlockCount(){
+        int totalBlockCount = 1;
+        for(Block block : blocks){
+            totalBlockCount += block.getTotalBlockCount();
+        }
+        return totalBlockCount;
+    }
+
+    public int getTotalBuildingCount(){
+        int totalBuildingCount = buildings.size();
+        for(Block block : blocks){
+            totalBuildingCount += block.getTotalBuildingCount();
+        }
+        return totalBuildingCount;
     }
 }

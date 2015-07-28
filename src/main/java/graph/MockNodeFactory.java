@@ -38,8 +38,8 @@ public class MockNodeFactory {
 
 
         Node root = new Node("Root");
-        root.addSubPackage(packA);
-        root.addSubPackage(packB);
+        root.addSubNodes(packA);
+        root.addSubNodes(packB);
         return root;
     }
 
@@ -56,8 +56,8 @@ public class MockNodeFactory {
         Leaf buildingRoot1 = new Leaf("RootBuilding", createMetricMap(900, 100, 50));
         Node rootPackage = new Node("Root", buildingRoot1);
 
-        subPackA.addSubPackage(subPackB);
-        rootPackage.addSubPackage(subPackA);
+        subPackA.addSubNodes(subPackB);
+        rootPackage.addSubNodes(subPackA);
 
         return rootPackage;
     }

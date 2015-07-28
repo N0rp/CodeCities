@@ -118,8 +118,9 @@ public class Building extends Group{
     public String toString(){
         String result = "Building [";
 
-        result += "SizeMetric="+sizeMetricName+":"+getSizeMetric();
-        //result += ", ";
+        result += "Width="+getWidth();
+        result += ", Depth="+getDepth();
+        result += ", SizeMetric="+sizeMetricName+":"+getSizeMetric();
 
         result += "]";
         return result;
@@ -142,7 +143,7 @@ public class Building extends Group{
     }
 
     public double getDepth(){
-        return buildingBox.getHeight();
+        return buildingBox.getDepth();
     }
 
     private void setHeight(double height){

@@ -94,7 +94,7 @@ public class CodeCityViewer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        City city = new City(MockNodeFactory.getSimplePackage());
+        City city = new City(MockNodeFactory.getMediumSizePackage());
         //City city = new City(getSourceMeterRootPackages());
 
         CityOverlay overlay = new CityOverlay(city);

@@ -12,17 +12,17 @@ public class BuildingRowPacker {
         return maxDepthBuilding.getDepth();
     }
 
-    public void arrangeAndResizeBuildings(List<Building> buildingsInRow, double rowY, double maxWidth){
-        arrangeBuildings(buildingsInRow, rowY);
+    public void arrangeAndResizeBuildings(List<Building> buildingsInRow, double rowZ, double maxWidth){
+        arrangeBuildings(buildingsInRow, rowZ);
         resizeToMaxBuildingHeight(buildingsInRow);
         resizeToContainerWidth(buildingsInRow, maxWidth);
     }
 
-    private void arrangeBuildings(List<Building> buildingsInRow, double rowY){
+    private void arrangeBuildings(List<Building> buildingsInRow, double rowZ){
         double buildingX = 0;
         for(Building building : buildingsInRow){
-            building.setLayoutX(buildingX);
-            building.setLayoutY(rowY);
+            building.setTranslateX(buildingX);
+            building.setTranslateZ(rowZ);
 
             buildingX += building.getWidth();
         }
