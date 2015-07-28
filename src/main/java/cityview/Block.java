@@ -2,11 +2,12 @@ package cityview;
 
 import graph.Leaf;
 import graph.Node;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.Rectangle;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +25,22 @@ public class Block extends Group{
         return buildings;
     }
 
-    public List<Block> getSubPackages() {
-        return subPackages;
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
-    private List<Block> subPackages;
+
+    public Building getSelectedBuilding() {
+        return selectedBuilding.get();
+    }
+
+    public ObjectProperty<Building> selectedBuildingProperty() {
+        return selectedBuilding;
+    }
+
+    private ObjectProperty<Building> selectedBuilding = new SimpleObjectProperty<Building>();
+
+    private List<Block> blocks;
     private List<Building> buildings;
 
     private Box ground;
@@ -41,26 +53,46 @@ public class Block extends Group{
     }
 
     private void setData(Node node){
-        subPackages = new LinkedList<>();
+        blocks = new LinkedList<>();
 
-        for(int i = 0; i < node.getSubPackages().size(); i++){
-            Node subPackage = node.getSubPackages().get(i);
-            subPackages.add(i, new Block(subPackage));
+        for(int i = 0; i < node.getNodes().size(); i++){
+            Node subNode = node.getNodes().get(i);
+            Block block = new Block(subNode);
+            blocks.add(i, block);
+
+            block.selectedBuildingProperty().addListener((observable, oldHoveredBuilding, newHoveredBuilding) -> {handleBuildingHover(newHoveredBuilding);});
         }
-        getChildren().addAll(subPackages);
+        getChildren().addAll(blocks);
 
         buildings = new LinkedList<>();
-        for(int i = 0; i < node.getBuildings().size(); i++){
-            Leaf leaf = node.getBuildings().get(i);
-            buildings.add(i, new Building(leaf));
+        for(int i = 0; i < node.getLeaves().size(); i++){
+            Leaf leaf = node.getLeaves().get(i);
+            Building building = new Building(leaf);
+            buildings.add(i, building);
+
+            building.isHoverProperty().addListener( (observable, oldValue, newValue) -> {
+                handleBuildingHover(building, newValue);
+            });
         }
         getChildren().addAll(buildings);
+    }
+
+    private void handleBuildingHover(Building building){
+        selectedBuilding.setValue(building);
+    }
+
+    private void handleBuildingHover(Building building, boolean isHover){
+        if(isHover){
+            handleBuildingHover(building);
+        }else{
+            handleBuildingHover(null);
+        }
     }
 
     public void setSizeMetricName(String sizeMetricName){
         this.sizeMetricName = sizeMetricName;
 
-        for(Block block : subPackages){
+        for(Block block : blocks){
             block.setSizeMetricName(sizeMetricName);
         }
 
@@ -77,7 +109,7 @@ public class Block extends Group{
     public void setHeightMetricName(String heightMetricName){
         this.heightMetricName = heightMetricName;
 
-        for(Block block : subPackages){
+        for(Block block : blocks){
             block.setHeightMetricName(heightMetricName);
         }
 
@@ -86,16 +118,24 @@ public class Block extends Group{
         }
     }
 
+    public String getHeightMetricName(){
+        return this.heightMetricName;
+    }
+
     public void setColorMetricName(String colorMetricName){
         this.colorMetricName = colorMetricName;
 
-        for(Block block : subPackages){
+        for(Block block : blocks){
             block.setColorMetricName(colorMetricName);
         }
 
         for(Building building : buildings){
             building.setColorMetricName(colorMetricName);
         }
+    }
+
+    public String getColorMetricName(){
+        return this.colorMetricName;
     }
 
     public double getMaxMetric(String metricName){
@@ -109,8 +149,8 @@ public class Block extends Group{
                     .max()
                     .getAsDouble();
         }
-        if (subPackages.size() > 0) {
-            maxBlockMetric = subPackages.stream().mapToDouble(subPackage -> subPackage.getMaxMetric(metricName)).max().getAsDouble();
+        if (blocks.size() > 0) {
+            maxBlockMetric = blocks.stream().mapToDouble(subPackage -> subPackage.getMaxMetric(metricName)).max().getAsDouble();
         }
 
         maxMetric = Math.max(maxBuildingMetric, maxBlockMetric);
@@ -119,7 +159,7 @@ public class Block extends Group{
     }
 
     public void normalizeHeightMetric(double maxHeightMetric, double maxBuildingHeight){
-        for(Block block : subPackages){
+        for(Block block : blocks){
             block.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
         }
         for(Building building : buildings){
@@ -128,7 +168,7 @@ public class Block extends Group{
     }
 
     public void normalizeColorMetric(double maxColorMetric){
-        for(Block block : subPackages){
+        for(Block block : blocks){
             block.normalizeColorMetric(maxColorMetric);
         }
         for(Building building : buildings){

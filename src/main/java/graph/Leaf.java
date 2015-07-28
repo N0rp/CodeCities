@@ -2,6 +2,7 @@ package graph;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Richard on 7/5/2015.
@@ -27,6 +28,10 @@ public class Leaf {
     public Leaf(String name, Map<String, Double> nameToMetric){
         this.name = name;
         this.nameToMetric = nameToMetric;
+    }
+
+    public Set<String> getAllMetricNames(){
+        return nameToMetric.keySet();
     }
 
 }

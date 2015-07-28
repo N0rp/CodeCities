@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import parse.csv.CsvParseException;
 import parse.sourcemeter.SourceMeterPackageReader;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,25 +59,23 @@ public class CodeCityViewer extends Application {
         cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
     }
 
-    public void buildWorld() throws Exception {
+    public SubScene buildCityScene(City city) throws Exception {
         // Create and position camera
         Group root = new Group();
         buildCamera(root);
 
         // Build the Scene Graph
-        City city = new City(MockNodeFactory.getSimplePackage());
-        //City city = new City(getSourceMeterRootPackages());
         root.getChildren().addAll(city);
 
         // Use a SubScene
         SubScene subScene = new SubScene(root, 300, 300, true, SceneAntialiasing.BALANCED);
-        handleMouse(subScene, world);
         subScene.setFill(Color.ALICEBLUE);
         subScene.setCamera(camera);
 
         Group group = new Group();
         group.getChildren().add(subScene);
-        world.getChildren().addAll(subScene);
+
+        return subScene;
     }
 
     public static final String PATH_SOURCE_METER_METHOD = "src/main/resources/log4j-1.2.17-Method.csv";
@@ -97,17 +94,26 @@ public class CodeCityViewer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        City city = new City(MockNodeFactory.getSimplePackage());
+        //City city = new City(getSourceMeterRootPackages());
+
+        CityOverlay overlay = new CityOverlay(city);
+
+        SubScene cityScene = buildCityScene(city);
+
+        world.getChildren().addAll(cityScene, new SubScene(overlay, 300, 50));
+        Scene scene = new Scene(world);
+
+        setMouseHandler(cityScene);
+        setKeyboardHandler(scene, world);
 
         primaryStage.setResizable(false);
-        buildWorld();
-        Scene scene = new Scene(world);
         primaryStage.setScene(scene);
 
-        handleKeyboard(scene, world);
         primaryStage.show();
     }
 
-    private void handleKeyboard(Scene scene, final javafx.scene.Node root) {
+    private void setKeyboardHandler(Scene scene, final javafx.scene.Node root) {
 
         scene.setOnKeyPressed(event -> {
             switch (event.getCode()) {
@@ -139,7 +145,7 @@ public class CodeCityViewer extends Application {
 
 
 
-    private void handleMouse(SubScene scene, final javafx.scene.Node root) {
+    private void setMouseHandler(SubScene scene) {
         scene.setOnMousePressed(me -> {
             mousePosX = me.getSceneX();
             mousePosY = me.getSceneY();
