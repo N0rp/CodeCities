@@ -1,4 +1,4 @@
-package cityview;
+package cityview.structure;
 
 import graph.Leaf;
 import javafx.beans.property.BooleanProperty;
@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 /**
  * Created by Richard on 7/6/2015.
  */
-public class Building extends Group implements Structure{
+public class Building extends Group implements Structure {
 
     private double maxColorMetric;
 
@@ -150,9 +150,9 @@ public class Building extends Group implements Structure{
     public String toString(){
         String result = "Building [";
 
-        result += "Width="+getWidth();
-        result += ", Depth="+getDepth();
-        result += ", SizeMetric="+sizeMetricName+":"+getSizeMetric();
+        result += "Width="+(int)getWidth();
+        result += ", Depth="+(int)getDepth();
+        result += ", SizeMetric="+sizeMetricName+":"+(int)getSizeMetric();
 
         result += "]";
         return result;

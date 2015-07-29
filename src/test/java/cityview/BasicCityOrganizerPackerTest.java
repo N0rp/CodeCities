@@ -1,5 +1,8 @@
 package cityview;
 
+import cityview.pack.BasicCityPacker;
+import cityview.pack.CityPacker;
+import cityview.structure.Block;
 import graph.Leaf;
 import graph.MockNodeFactory;
 import graph.Node;
@@ -12,7 +15,7 @@ import static cityview.CityBoundsUtil.*;
 /**
  * Created by Richard on 7/22/2015.
  */
-public class BasicCityPackerTest {
+public class BasicCityOrganizerPackerTest {
 
     @Test
     public void testArrangeBlock_OneBuildingInOneRow_Success() {

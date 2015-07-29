@@ -1,4 +1,4 @@
-package cityview;
+package cityview.structure;
 
 /**
  * Created by Richard on 7/29/2015.

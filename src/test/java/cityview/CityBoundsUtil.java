@@ -1,5 +1,7 @@
 package cityview;
 
+import cityview.structure.Block;
+import cityview.structure.Building;
 import javafx.scene.shape.Rectangle;
 import org.junit.Assert;
 

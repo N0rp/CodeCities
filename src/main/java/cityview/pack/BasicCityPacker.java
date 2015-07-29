@@ -1,4 +1,7 @@
-package cityview;
+package cityview.pack;
+
+import cityview.structure.Block;
+import cityview.structure.Building;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -7,7 +10,7 @@ import java.util.ListIterator;
 /**
  * Created by Richard on 7/22/2015.
  */
-public class BasicCityPacker implements CityPacker{
+public class BasicCityPacker implements CityPacker {
 
     public void fitBlockIntoSize(Block block, double maxSizeMetric){
         List<Building> remainingRectangles = new LinkedList<>(block.getBuildings());

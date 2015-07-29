@@ -1,13 +1,8 @@
-package core;
+package cityview.widget;
 
-import cityview.Block;
-import cityview.Building;
-import cityview.City;
-import cityview.Structure;
+import cityview.structure.Building;
 import graph.Leaf;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,8 +11,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Callback;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,10 +23,10 @@ public class CityExplorer extends VBox{
     @FXML
     private ListView<Building> cityContent;
 
-    private City city;
+    private CityOrganizer cityOrganizer;
 
-    public CityExplorer(City city){
-        this.city = city;
+    public CityExplorer(CityOrganizer cityOrganizer){
+        this.cityOrganizer = cityOrganizer;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/core/CityExplorer.fxml"));
         fxmlLoader.setRoot(this);
@@ -53,7 +46,7 @@ public class CityExplorer extends VBox{
     }
 
     private void initializeExplorer(){
-        List<Building> allBuildings = city.getRootBlock().findAllBuildings();
+        List<Building> allBuildings = cityOrganizer.getRootBlock().findAllBuildings();
         ObservableList<Building> observableBuildings = FXCollections.observableArrayList(allBuildings);
         cityContent.setItems(observableBuildings);
         cityContent.setCellFactory(list -> new XCell() );

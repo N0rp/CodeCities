@@ -1,5 +1,9 @@
-package cityview;
+package cityview.widget;
 
+import cityview.pack.CityPacker;
+import cityview.pack.BasicCityPacker;
+import cityview.structure.Block;
+import cityview.structure.Building;
 import graph.Leaf;
 import graph.Node;
 import javafx.beans.property.ObjectProperty;
@@ -10,7 +14,7 @@ import java.util.Set;
 /**
  * Created by Richard on 7/5/2015.
  */
-public class City extends Group{
+public class CityOrganizer extends Group{
 
     private Block rootBlock;
 
@@ -30,7 +34,7 @@ public class City extends Group{
 
     private Set<String> metricNames;
 
-    public City(Node rootNode){
+    public CityOrganizer(Node rootNode){
         setData(rootNode);
     }
 
@@ -48,8 +52,9 @@ public class City extends Group{
         normalizeColorMetric();
 
         CityPacker packer = new BasicCityPacker();
-        double blockSize = rootBlock.getMaxMetric(defaultSizeMetric);
+        double blockSize = rootBlock.getSumMetric(defaultSizeMetric);
         packer.fitBlockIntoSize(rootBlock, blockSize);
+        int foo = 5;
     }
 
     private void normalizeHeightMetric(){

@@ -1,5 +1,7 @@
 package cityview;
 
+import cityview.pack.BuildingRowPacker;
+import cityview.structure.Building;
 import graph.Leaf;
 import graph.MockNodeFactory;
 import org.junit.Test;

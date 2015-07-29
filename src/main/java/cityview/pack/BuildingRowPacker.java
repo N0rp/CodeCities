@@ -1,4 +1,6 @@
-package cityview;
+package cityview.pack;
+
+import cityview.structure.Building;
 
 import java.util.List;
 

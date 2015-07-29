@@ -1,8 +1,10 @@
 package core;
 
+import cityview.widget.CityExplorer;
+import cityview.widget.CityOrganizer;
+import cityview.widget.CityOverlay;
 import graph.MockNodeFactory;
 import graph.Node;
-import cityview.City;
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.input.MouseEvent;
@@ -13,12 +15,10 @@ import javafx.stage.Stage;
 import parse.csv.CsvParseException;
 import parse.sourcemeter.SourceMeterPackageReader;
 
-import java.util.List;
-
 /**
  * Created by Richard on 6/7/2015.
  */
-public class CodeCityViewer extends Application {
+public class CodeCityApp extends Application {
 
     private static final double CONTROL_MULTIPLIER = 0.1;
     private static final double SHIFT_MULTIPLIER = 10.0;
@@ -61,13 +61,13 @@ public class CodeCityViewer extends Application {
         cameraXform.rx.setAngle(CAMERA_INITIAL_X_ANGLE);
     }
 
-    public SubScene buildCityScene(City city) throws Exception {
+    public SubScene buildCityScene(CityOrganizer cityOrganizer) throws Exception {
         // Create and position camera
         Group root = new Group();
         buildCamera(root);
 
         // Build the Scene Graph
-        root.getChildren().addAll(city);
+        root.getChildren().addAll(cityOrganizer);
 
         // Use a SubScene
         SubScene subScene = new SubScene(root, 300, 300, true, SceneAntialiasing.BALANCED);
@@ -96,13 +96,13 @@ public class CodeCityViewer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        City city = new City(MockNodeFactory.getSimplePackage());
-        //City city = new City(getSourceMeterRootPackages());
+        CityOrganizer cityOrganizer = new CityOrganizer(MockNodeFactory.getSimplePackage());
+        //CityOrganizer cityOrganizer = new CityOrganizer(getSourceMeterRootPackages());
 
-        SubScene cityScene = buildCityScene(city);
+        SubScene cityScene = buildCityScene(cityOrganizer);
         setMouseHandler(cityScene);
-        CityOverlay overlay = new CityOverlay(city);
-        CityExplorer explorer = new CityExplorer(city);
+        CityOverlay overlay = new CityOverlay(cityOrganizer);
+        CityExplorer explorer = new CityExplorer(cityOrganizer);
 
         VBox all = new VBox();
         HBox content = new HBox();

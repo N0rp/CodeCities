@@ -1,5 +1,6 @@
 package cityview;
 
+import cityview.structure.Block;
 import graph.Leaf;
 import graph.MockNodeFactory;
 import graph.Node;

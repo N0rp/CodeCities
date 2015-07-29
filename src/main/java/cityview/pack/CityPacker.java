@@ -1,6 +1,6 @@
-package cityview;
+package cityview.pack;
 
-import java.util.List;
+import cityview.structure.Block;
 
 /**
  * Created by Richard on 7/27/2015.

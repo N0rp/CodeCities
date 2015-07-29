@@ -1,4 +1,4 @@
-package cityview;
+package cityview.structure;
 
 import graph.Leaf;
 import graph.Node;
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Richard on 7/6/2015.
  */
-public class Block extends Group implements Structure{
+public class Block extends Group implements Structure {
 
     private String sizeMetricName = Leaf.LINES_OF_CODE;
     private String heightMetricName = Leaf.LINES_OF_CODE;

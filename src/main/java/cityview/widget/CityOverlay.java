@@ -1,7 +1,6 @@
-package core;
+package cityview.widget;
 
-import cityview.Building;
-import cityview.City;
+import cityview.structure.Building;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,7 @@ import java.io.IOException;
  */
 public class CityOverlay extends VBox {
 
-    private City city;
+    private CityOrganizer cityOrganizer;
 
     @FXML
     private ChoiceBox<String> sizeMetric;
@@ -39,8 +38,8 @@ public class CityOverlay extends VBox {
     @FXML
     private Text buildingColor;
 
-    public CityOverlay(City city){
-        this.city = city;
+    public CityOverlay(CityOrganizer cityOrganizer){
+        this.cityOrganizer = cityOrganizer;
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/core/CityOverlay.fxml"));
         fxmlLoader.setRoot(this);
@@ -65,50 +64,50 @@ public class CityOverlay extends VBox {
     }
 
     private void initializeSizeChoiceBox(){
-        sizeMetric.setItems(FXCollections.observableArrayList(city.getMetricNames()));
+        sizeMetric.setItems(FXCollections.observableArrayList(cityOrganizer.getMetricNames()));
         sizeMetric.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> {
             if(newItem != null && newItem.length() > 0){
-                city.setSizeMetricName(newItem);
+                cityOrganizer.setSizeMetricName(newItem);
             }
         });
         sizeMetric.getSelectionModel().selectFirst();
     }
 
     private void initializeHeightChoiceBox(){
-        heightMetric.setItems(FXCollections.observableArrayList(city.getMetricNames()));
+        heightMetric.setItems(FXCollections.observableArrayList(cityOrganizer.getMetricNames()));
         heightMetric.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> {
             if(newItem != null && newItem.length() > 0){
-                city.setHeightMetricName(newItem);
+                cityOrganizer.setHeightMetricName(newItem);
             }
         });
         heightMetric.getSelectionModel().selectFirst();
     }
 
     private void initializeColorChoiceBox(){
-        colorMetric.setItems(FXCollections.observableArrayList(city.getMetricNames()));
+        colorMetric.setItems(FXCollections.observableArrayList(cityOrganizer.getMetricNames()));
         colorMetric.getSelectionModel().selectedItemProperty().addListener((observable, oldItem, newItem) -> {
             if(newItem != null && newItem.length() > 0){
-                city.setColorMetricName(newItem);
+                cityOrganizer.setColorMetricName(newItem);
             }
         });
         colorMetric.getSelectionModel().selectFirst();
     }
 
     private void initializeHoveredBuilding(){
-        city.hoverBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
+        cityOrganizer.hoverBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
             refreshBuildingText();
         });
     }
 
     private void initializeSelectedBuilding(){
-        city.selectedBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
+        cityOrganizer.selectedBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
             refreshBuildingText();
         });
     }
 
     private void refreshBuildingText(){
-        Building hoveredBuilding = city.hoverBuildingProperty().getValue();
-        Building selectedBuilding = city.selectedBuildingProperty().getValue();
+        Building hoveredBuilding = cityOrganizer.hoverBuildingProperty().getValue();
+        Building selectedBuilding = cityOrganizer.selectedBuildingProperty().getValue();
 
         if(hoveredBuilding != null){
             setBuildingText(hoveredBuilding);
