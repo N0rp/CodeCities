@@ -20,9 +20,9 @@ public class SourceMeterPackageReaderTest {
                 CsvParserTest.PATH_SOURCE_METER_PACKAGE,
                 CsvParserTest.PATH_SOURCE_METER_CLASS,
                 CsvParserTest.PATH_SOURCE_METER_METHOD);
-        List<Node> nodes = sourceMeterPackageReader.createCityPackages();
-        Assert.assertNotNull(nodes);
-        Assert.assertNotEquals(0, nodes.size());
+        Node node = sourceMeterPackageReader.createCityPackages();
+        Assert.assertNotNull(node);
+        //Assert.assertNotEquals(0, nodes.size());
 
 
     }

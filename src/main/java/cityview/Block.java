@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Richard on 7/6/2015.
  */
-public class Block extends Group{
+public class Block extends Group implements Structure{
 
     private String sizeMetricName = Leaf.LINES_OF_CODE;
     private String heightMetricName = Leaf.LINES_OF_CODE;
@@ -29,10 +29,11 @@ public class Block extends Group{
         return blocks;
     }
 
-
-    public Building getSelectedBuilding() {
-        return selectedBuilding.get();
+    public ObjectProperty<Building> hoverBuildingProperty() {
+        return hoverBuilding;
     }
+
+    private ObjectProperty<Building> hoverBuilding = new SimpleObjectProperty<Building>();
 
     public ObjectProperty<Building> selectedBuildingProperty() {
         return selectedBuilding;
@@ -45,6 +46,8 @@ public class Block extends Group{
 
     private Box ground;
 
+    private Node node;
+
     public Block(Node node){
         ground = new Box();
         ground.setMaterial(new PhongMaterial(Color.GRAY));
@@ -53,6 +56,7 @@ public class Block extends Group{
     }
 
     private void setData(Node node){
+        this.node = node;
         blocks = new LinkedList<>();
 
         for(int i = 0; i < node.getNodes().size(); i++){
@@ -60,7 +64,7 @@ public class Block extends Group{
             Block block = new Block(subNode);
             blocks.add(i, block);
 
-            block.selectedBuildingProperty().addListener((observable, oldHoveredBuilding, newHoveredBuilding) -> {handleBuildingHover(newHoveredBuilding);});
+            block.hoverBuildingProperty().addListener((observable, oldHoveredBuilding, newHoveredBuilding) -> {handleBuildingHover(newHoveredBuilding);});
         }
         getChildren().addAll(blocks);
 
@@ -73,13 +77,18 @@ public class Block extends Group{
             building.isHoverProperty().addListener( (observable, oldValue, newValue) -> {
                 handleBuildingHover(building, newValue);
             });
+
+            building.isSelectedProperty().addListener((observable, oldValue, isSelected) -> {
+                if(isSelected) {
+                    handleBuildingSelected(building);
+                }else{
+                    handleBuildingSelected(null);
+                }
+            });
         }
         getChildren().addAll(buildings);
     }
 
-    private void handleBuildingHover(Building building){
-        selectedBuilding.setValue(building);
-    }
 
     private void handleBuildingHover(Building building, boolean isHover){
         if(isHover){
@@ -87,6 +96,16 @@ public class Block extends Group{
         }else{
             handleBuildingHover(null);
         }
+    }
+    private void handleBuildingHover(Building building){
+        hoverBuilding.setValue(building);
+    }
+
+    private void handleBuildingSelected(Building selectedBuilding){
+        if(this.selectedBuilding.getValue() != null){
+            this.selectedBuilding.getValue().setSelected(false);
+        }
+        this.selectedBuilding.setValue(selectedBuilding);
     }
 
     public void setSizeMetricName(String sizeMetricName){
@@ -100,11 +119,10 @@ public class Block extends Group{
             building.setSizeMetricName(sizeMetricName);
         }
 
-        double maxSize = getMaxMetric(sizeMetricName);
-        double maxWidth = Math.sqrt(maxSize);
-        ground.setWidth(maxWidth);
+        ground.setWidth(getLayoutBounds().getWidth());
         ground.setHeight(5);
-        ground.setDepth(maxWidth);
+        ground.setDepth(getLayoutBounds().getDepth());
+        ground.setTranslateY(-2.5);
     }
 
     public void setHeightMetricName(String heightMetricName){
@@ -210,5 +228,19 @@ public class Block extends Group{
             totalBuildingCount += block.getTotalBuildingCount();
         }
         return totalBuildingCount;
+    }
+
+    public List<Building> findAllBuildings(){
+        List<Building> allBuildings = new LinkedList<>();
+        for(Block block : blocks){
+            allBuildings.addAll(block.findAllBuildings());
+        }
+        allBuildings.addAll(buildings);
+        return allBuildings;
+    }
+
+    @Override
+    public String getName() {
+        return node.getName();
     }
 }

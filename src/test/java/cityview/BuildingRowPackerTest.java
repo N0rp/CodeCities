@@ -23,7 +23,8 @@ public class BuildingRowPackerTest {
         buildings.add(new Building(leafA));
 
         BuildingRowPacker rowPacker = new BuildingRowPacker();
-        rowPacker.arrangeAndResizeBuildings(buildings, 0, maxWidth);
+        rowPacker.arrangeBuildings(buildings, 0);
+        rowPacker.resizeBuildings(buildings, maxWidth);
 
         assertEquals(0, (int)buildings.get(0).getLayoutX());
         assertEquals(0, (int) buildings.get(0).getLayoutY());
@@ -41,7 +42,8 @@ public class BuildingRowPackerTest {
         buildings.add(new Building(leafA));
 
         BuildingRowPacker rowPacker = new BuildingRowPacker();
-        rowPacker.arrangeAndResizeBuildings(buildings, 0, maxWidth);
+        rowPacker.arrangeBuildings(buildings, 0);
+        rowPacker.resizeBuildings(buildings, maxWidth);
 
         assertEquals(0, (int)buildings.get(0).getLayoutX());
         assertEquals(0, (int) buildings.get(0).getLayoutY());
@@ -61,7 +63,8 @@ public class BuildingRowPackerTest {
         buildings.add(new Building(leafB));
 
         BuildingRowPacker rowPacker = new BuildingRowPacker();
-        rowPacker.arrangeAndResizeBuildings(buildings, 0, maxWidth);
+        rowPacker.arrangeBuildings(buildings, 0);
+        rowPacker.resizeBuildings(buildings, maxWidth);
 
         assertEquals(0, (int)buildings.get(0).getLayoutX());
         assertEquals(0, (int) buildings.get(0).getLayoutY());

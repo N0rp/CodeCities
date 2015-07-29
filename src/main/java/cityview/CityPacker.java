@@ -13,5 +13,5 @@ public interface CityPacker {
      * @param block
      * @param size
      */
-    void arrangeBlock(Block block, double size);
+    void fitBlockIntoSize(Block block, double size);
 }

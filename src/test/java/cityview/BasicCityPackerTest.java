@@ -3,12 +3,9 @@ package cityview;
 import graph.Leaf;
 import graph.MockNodeFactory;
 import graph.Node;
-import javafx.scene.shape.Rectangle;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static cityview.CityBoundsUtil.*;
 
@@ -29,7 +26,7 @@ public class BasicCityPackerTest {
         Block block = new Block(node);
 
         CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.arrangeBlock(block, 100);
+        cityPacker.fitBlockIntoSize(block, 100);
 
         assertIsSquare(block);
     }
@@ -47,7 +44,7 @@ public class BasicCityPackerTest {
         Block block = new Block(node);
 
         CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.arrangeBlock(block, 200);
+        cityPacker.fitBlockIntoSize(block, 200);
 
         assertIsSquare(block);
     }
@@ -66,7 +63,7 @@ public class BasicCityPackerTest {
         Block block = new Block(node);
 
         CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.arrangeBlock(block, 100);
+        cityPacker.fitBlockIntoSize(block, 100);
 
         assertIsRectangle(block, 10, 20);
     }

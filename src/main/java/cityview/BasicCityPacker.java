@@ -9,7 +9,7 @@ import java.util.ListIterator;
  */
 public class BasicCityPacker implements CityPacker{
 
-    public void arrangeBlock(Block block, double maxSizeMetric){
+    public void fitBlockIntoSize(Block block, double maxSizeMetric){
         List<Building> remainingRectangles = new LinkedList<>(block.getBuildings());
 
         double maxWidthMetric = Math.sqrt(maxSizeMetric);
@@ -22,7 +22,8 @@ public class BasicCityPacker implements CityPacker{
 
             List<Building> buildingsInRow = removeBuildingsThatFitIntoWidth(iterator, maxWidthMetric - building.getWidth());
             buildingsInRow.add(0, building);
-            rowPacker.arrangeAndResizeBuildings(buildingsInRow, currentDepth, maxWidthMetric);
+            rowPacker.resizeBuildings(buildingsInRow, maxWidthMetric);
+            rowPacker.arrangeBuildings(buildingsInRow, currentDepth);
 
             double maxDepth = rowPacker.getMaxDepth(buildingsInRow);
             currentDepth += maxDepth;

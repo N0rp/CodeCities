@@ -3,8 +3,6 @@ package cityview;
 import graph.Leaf;
 import graph.Node;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Group;
 
 import java.util.Set;
@@ -21,6 +19,10 @@ public class City extends Group{
     private final String defaultColorMetric = Leaf.LINES_OF_CODE;
 
     private final double maxBuildingHeight = 100;
+
+    public ObjectProperty<Building> hoverBuildingProperty() {
+        return rootBlock.hoverBuildingProperty();
+    }
 
     public ObjectProperty<Building> selectedBuildingProperty() {
         return rootBlock.selectedBuildingProperty();
@@ -47,7 +49,7 @@ public class City extends Group{
 
         CityPacker packer = new BasicCityPacker();
         double blockSize = rootBlock.getMaxMetric(defaultSizeMetric);
-        packer.arrangeBlock(rootBlock, blockSize);
+        packer.fitBlockIntoSize(rootBlock, blockSize);
     }
 
     private void normalizeHeightMetric(){
@@ -78,5 +80,9 @@ public class City extends Group{
 
     public Set<String> getMetricNames(){
         return metricNames;
+    }
+
+    public Block getRootBlock() {
+        return rootBlock;
     }
 }

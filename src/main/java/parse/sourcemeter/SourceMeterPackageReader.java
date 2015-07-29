@@ -23,7 +23,7 @@ public class SourceMeterPackageReader {
         this.methodPath = methodPath;
     }
 
-    public List<Node> createCityPackages() throws CsvParseException {
+    public Node createCityPackages() throws CsvParseException {
         CsvParser csvParser = new CsvParser();
         List<Map<HeaderEnum, String>> packageMappings = csvParser.parse(packagePath, SourceMeterMappings.packageMappings);
         List<Map<HeaderEnum, String>> classMappings = csvParser.parse(classPath, SourceMeterMappings.classMappings);
@@ -31,7 +31,7 @@ public class SourceMeterPackageReader {
 
         List<Node> nodes = createCityPackages(packageMappings, classMappings, methodMappings);
 
-        return nodes;
+        return nodes.get(0);
     }
 
     private List<Node> createCityPackages(List<Map<HeaderEnum, String>> packageMappings,

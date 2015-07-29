@@ -1,24 +1,13 @@
 package core;
 
+import cityview.Building;
 import cityview.City;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
-import javafx.scene.SubScene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.RectangleBuilder;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBuilder;
 
 import java.io.IOException;
 
@@ -72,6 +61,7 @@ public class CityOverlay extends VBox {
         initializeColorChoiceBox();
 
         initializeHoveredBuilding();
+        initializeSelectedBuilding();
     }
 
     private void initializeSizeChoiceBox(){
@@ -105,18 +95,38 @@ public class CityOverlay extends VBox {
     }
 
     private void initializeHoveredBuilding(){
-        city.selectedBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
-            clearCurrentBuildingText();
-            if(newBuilding != null){
-                buildingName.setText(newBuilding.getName());
-                buildingSize.setText(newBuilding.getSizeMetric()+"");
-                buildingHeight.setText(newBuilding.getHeightMetric()+"");
-                buildingColor.setText(newBuilding.getColorMetric()+"");
-            }
+        city.hoverBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
+            refreshBuildingText();
         });
     }
 
-    private void clearCurrentBuildingText(){
+    private void initializeSelectedBuilding(){
+        city.selectedBuildingProperty().addListener((observable, oldBuilding, newBuilding) -> {
+            refreshBuildingText();
+        });
+    }
+
+    private void refreshBuildingText(){
+        Building hoveredBuilding = city.hoverBuildingProperty().getValue();
+        Building selectedBuilding = city.selectedBuildingProperty().getValue();
+
+        if(hoveredBuilding != null){
+            setBuildingText(hoveredBuilding);
+        }else if(selectedBuilding != null){
+            setBuildingText(selectedBuilding);
+        }else{
+            clearBuildingText();
+        }
+    }
+
+    private void setBuildingText(Building building){
+        buildingName.setText(building.getName());
+        buildingSize.setText(building.getSizeMetric()+"");
+        buildingHeight.setText(building.getHeightMetric()+"");
+        buildingColor.setText(building.getColorMetric()+"");
+    }
+
+    private void clearBuildingText(){
         buildingName.setText("");
         buildingSize.setText("");
         buildingHeight.setText("");

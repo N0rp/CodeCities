@@ -6,6 +6,8 @@ import cityview.City;
 import javafx.application.Application;
 import javafx.scene.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import parse.csv.CsvParseException;
@@ -82,29 +84,34 @@ public class CodeCityViewer extends Application {
     public static final String PATH_SOURCE_METER_CLASS = "src/main/resources/log4j-1.2.17-Class.csv";
     public static final String PATH_SOURCE_METER_PACKAGE = "src/main/resources/log4j-1.2.17-Package.csv";
 
-    private List<Node> getSourceMeterRootPackages() throws CsvParseException {
+    private Node getSourceMeterRootPackages() throws CsvParseException {
         SourceMeterPackageReader sourceMeterPackageReader = new SourceMeterPackageReader(
                 PATH_SOURCE_METER_PACKAGE,
                 PATH_SOURCE_METER_CLASS,
                 PATH_SOURCE_METER_METHOD);
-        List<Node> nodes = sourceMeterPackageReader.createCityPackages();
+        Node nodes = sourceMeterPackageReader.createCityPackages();
 
         return nodes;
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        City city = new City(MockNodeFactory.getMediumSizePackage());
+        City city = new City(MockNodeFactory.getSimplePackage());
         //City city = new City(getSourceMeterRootPackages());
 
-        CityOverlay overlay = new CityOverlay(city);
-
         SubScene cityScene = buildCityScene(city);
-
-        world.getChildren().addAll(cityScene, new SubScene(overlay, 300, 50));
-        Scene scene = new Scene(world);
-
         setMouseHandler(cityScene);
+        CityOverlay overlay = new CityOverlay(city);
+        CityExplorer explorer = new CityExplorer(city);
+
+        VBox all = new VBox();
+        HBox content = new HBox();
+
+        all.getChildren().addAll(overlay, content);
+        content.getChildren().addAll(explorer, cityScene);
+
+        world.getChildren().addAll(all);
+        Scene scene = new Scene(world);
         setKeyboardHandler(scene, world);
 
         primaryStage.setResizable(false);

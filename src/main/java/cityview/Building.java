@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 /**
  * Created by Richard on 7/6/2015.
  */
-public class Building extends Group{
+public class Building extends Group implements Structure{
 
     private double maxColorMetric;
 
@@ -38,7 +38,20 @@ public class Building extends Group{
         return isHover;
     }
 
+    public boolean isSelected(){
+        return isSelectedProperty().get();
+    }
+
+    public void setSelected(boolean isSelected){
+        this.isSelected.setValue(isSelected);
+    }
+
+    public ObservableBooleanValue isSelectedProperty() {
+        return isSelected;
+    }
+
     private BooleanProperty isHover = new SimpleBooleanProperty();
+    private BooleanProperty isSelected = new SimpleBooleanProperty();
 
     public Building(Leaf leaf){
         initChildren();
@@ -54,16 +67,35 @@ public class Building extends Group{
 
         setOnMouseEntered(me -> {
             isHover.set(true);
-            this.buildingBox.setMaterial(new PhongMaterial(Color.AQUA));
-            buildingLabel.setVisible(true);
         });
         setOnMouseExited(me -> {
             isHover.set(false);
-            normalizeColorMetric(maxColorMetric);
-            buildingLabel.setVisible(false);
+        });
+        setOnMouseClicked(me ->{
+            setSelected(true);
+        });
+
+        isHover.addListener((observable) -> {
+            refreshColor();
+        });
+
+        isSelected.addListener((observable) -> {
+            refreshColor();
         });
 
         getChildren().addAll(buildingBox, buildingLabel);
+    }
+
+    private void refreshColor(){
+        boolean isHover = isHover();
+        boolean isSelected = isSelected();
+        if(isHover){
+            this.buildingBox.setMaterial(new PhongMaterial(Color.AQUA));
+        }else if(isSelected){
+            this.buildingBox.setMaterial(new PhongMaterial(Color.BLUE));
+        }else{
+            normalizeColorMetric(maxColorMetric);
+        }
     }
 
     private void setData(Leaf leaf){
@@ -148,6 +180,7 @@ public class Building extends Group{
 
     private void setHeight(double height){
         buildingBox.setHeight(height);
+        buildingBox.setTranslateY(height/2);
     }
 
 
