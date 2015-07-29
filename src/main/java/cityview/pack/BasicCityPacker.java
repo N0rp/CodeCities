@@ -12,6 +12,7 @@ import java.util.ListIterator;
  */
 public class BasicCityPacker implements CityPacker {
 
+    @Override
     public void fitBlockIntoSize(Block block, double maxSizeMetric){
         List<Building> remainingRectangles = new LinkedList<>(block.getBuildings());
 
@@ -25,8 +26,8 @@ public class BasicCityPacker implements CityPacker {
 
             List<Building> buildingsInRow = removeBuildingsThatFitIntoWidth(iterator, maxWidthMetric - building.getWidth());
             buildingsInRow.add(0, building);
-            rowPacker.arrangeBuildings(buildingsInRow, currentDepth);
             rowPacker.resizeBuildings(buildingsInRow, maxWidthMetric);
+            rowPacker.arrangeBuildings(buildingsInRow, currentDepth);
 
             double maxDepth = rowPacker.getMaxDepth(buildingsInRow);
             currentDepth += maxDepth;

@@ -115,6 +115,9 @@ public class Block extends Group implements Structure {
         return node.getName();
     }
 
+    public String getSizeMetricName(){
+        return this.sizeMetricName;
+    }
     public void setSizeMetricName(String sizeMetricName){
         this.sizeMetricName = sizeMetricName;
 

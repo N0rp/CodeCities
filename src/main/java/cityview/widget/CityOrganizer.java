@@ -16,9 +16,6 @@ import java.util.Set;
  * Created by Richard on 7/5/2015.
  */
 public class CityOrganizer extends Group{
-    private final String defaultSizeMetric = Leaf.LINES_OF_CODE;
-    private final String defaultHeightMetric = Leaf.LINES_OF_CODE;
-    private final String defaultColorMetric = Leaf.LINES_OF_CODE;
 
     private Block rootBlock;
 
@@ -35,25 +32,11 @@ public class CityOrganizer extends Group{
         getChildren().addAll(rootBlock);
 
         this.metricNames = rootNode.findAllMetricNames();
-        setDefaultMetricNames();
-        normalizeMetrics();
-
-        packCity();
-    }
-
-    private void setDefaultMetricNames(){
-        rootBlock.setSizeMetricName(defaultSizeMetric);
-        rootBlock.setHeightMetricName(defaultHeightMetric);
-        rootBlock.setColorMetricName(defaultColorMetric);
-    }
-
-    private void normalizeMetrics(){
-        normalizeHeightMetric();
-        normalizeColorMetric();
     }
 
     public void setSizeMetricName(String sizeMetric){
         rootBlock.setSizeMetricName(sizeMetric);
+        packCity();
     }
 
     public void setHeightMetricName(String heightMetric){
@@ -78,7 +61,7 @@ public class CityOrganizer extends Group{
 
     private void packCity(){
         CityPacker packer = new BasicCityPacker();
-        double blockSize = rootBlock.findSumForMetric(defaultSizeMetric);
+        double blockSize = rootBlock.findSumForMetric(rootBlock.getSizeMetricName());
         packer.fitBlockIntoSize(rootBlock, blockSize);
         int foo = 5;
     }

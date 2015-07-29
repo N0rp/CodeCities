@@ -22,8 +22,8 @@ public class BuildingRowPacker {
     public void arrangeBuildings(List<Building> buildingsInRow, double rowZ){
         double buildingX = 0;
         for(Building building : buildingsInRow){
-            building.setTranslateX(buildingX);
-            building.setTranslateZ(rowZ);
+            building.setTranslateX(building.getWidth()/2 + buildingX);
+            building.setTranslateZ(building.getDepth()/2 + rowZ);
 
             buildingX += building.getWidth();
         }
