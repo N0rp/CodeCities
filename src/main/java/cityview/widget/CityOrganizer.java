@@ -7,6 +7,7 @@ import cityview.structure.Building;
 import graph.Leaf;
 import graph.Node;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Group;
 
 import java.util.Set;
@@ -15,22 +16,13 @@ import java.util.Set;
  * Created by Richard on 7/5/2015.
  */
 public class CityOrganizer extends Group{
-
-    private Block rootBlock;
-
     private final String defaultSizeMetric = Leaf.LINES_OF_CODE;
     private final String defaultHeightMetric = Leaf.LINES_OF_CODE;
     private final String defaultColorMetric = Leaf.LINES_OF_CODE;
 
+    private Block rootBlock;
+
     private final double maxBuildingHeight = 100;
-
-    public ObjectProperty<Building> hoverBuildingProperty() {
-        return rootBlock.hoverBuildingProperty();
-    }
-
-    public ObjectProperty<Building> selectedBuildingProperty() {
-        return rootBlock.selectedBuildingProperty();
-    }
 
     private Set<String> metricNames;
 
@@ -43,30 +35,21 @@ public class CityOrganizer extends Group{
         getChildren().addAll(rootBlock);
 
         this.metricNames = rootNode.findAllMetricNames();
+        setDefaultMetricNames();
+        normalizeMetrics();
 
+        packCity();
+    }
+
+    private void setDefaultMetricNames(){
         rootBlock.setSizeMetricName(defaultSizeMetric);
         rootBlock.setHeightMetricName(defaultHeightMetric);
         rootBlock.setColorMetricName(defaultColorMetric);
+    }
 
+    private void normalizeMetrics(){
         normalizeHeightMetric();
         normalizeColorMetric();
-
-        CityPacker packer = new BasicCityPacker();
-        double blockSize = rootBlock.getSumMetric(defaultSizeMetric);
-        packer.fitBlockIntoSize(rootBlock, blockSize);
-        int foo = 5;
-    }
-
-    private void normalizeHeightMetric(){
-        String heightMetricName = rootBlock.getHeightMetricName();
-        double maxHeightMetric = rootBlock.getMaxMetric(heightMetricName);
-        rootBlock.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
-    }
-
-    private void normalizeColorMetric(){
-        String colorMetricName = rootBlock.getColorMetricName();
-        double maxColorMetric = rootBlock.getMaxMetric(colorMetricName);
-        rootBlock.normalizeColorMetric(maxColorMetric);
     }
 
     public void setSizeMetricName(String sizeMetric){
@@ -77,10 +60,27 @@ public class CityOrganizer extends Group{
         rootBlock.setHeightMetricName(heightMetric);
         normalizeHeightMetric();
     }
+    private void normalizeHeightMetric(){
+        String heightMetricName = rootBlock.getHeightMetricName();
+        double maxHeightMetric = rootBlock.findMaxForMetric(heightMetricName);
+        rootBlock.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
+    }
 
     public void setColorMetricName(String colorMetric){
         rootBlock.setColorMetricName(colorMetric);
         normalizeColorMetric();
+    }
+    private void normalizeColorMetric(){
+        String colorMetricName = rootBlock.getColorMetricName();
+        double maxColorMetric = rootBlock.findMaxForMetric(colorMetricName);
+        rootBlock.normalizeColorMetric(maxColorMetric);
+    }
+
+    private void packCity(){
+        CityPacker packer = new BasicCityPacker();
+        double blockSize = rootBlock.findSumForMetric(defaultSizeMetric);
+        packer.fitBlockIntoSize(rootBlock, blockSize);
+        int foo = 5;
     }
 
     public Set<String> getMetricNames(){
@@ -89,5 +89,13 @@ public class CityOrganizer extends Group{
 
     public Block getRootBlock() {
         return rootBlock;
+    }
+
+    public ReadOnlyObjectProperty<Building> hoverBuildingProperty() {
+        return rootBlock.hoverBuildingProperty();
+    }
+
+    public ReadOnlyObjectProperty<Building> selectedBuildingProperty() {
+        return rootBlock.selectedBuildingProperty();
     }
 }

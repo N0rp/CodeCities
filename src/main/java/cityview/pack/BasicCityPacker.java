@@ -25,8 +25,8 @@ public class BasicCityPacker implements CityPacker {
 
             List<Building> buildingsInRow = removeBuildingsThatFitIntoWidth(iterator, maxWidthMetric - building.getWidth());
             buildingsInRow.add(0, building);
-            rowPacker.resizeBuildings(buildingsInRow, maxWidthMetric);
             rowPacker.arrangeBuildings(buildingsInRow, currentDepth);
+            rowPacker.resizeBuildings(buildingsInRow, maxWidthMetric);
 
             double maxDepth = rowPacker.getMaxDepth(buildingsInRow);
             currentDepth += maxDepth;

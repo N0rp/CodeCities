@@ -3,6 +3,7 @@ package cityview.structure;
 import graph.Leaf;
 import graph.Node;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -21,24 +22,7 @@ public class Block extends Group implements Structure {
     private String heightMetricName = Leaf.LINES_OF_CODE;
     private String colorMetricName = Leaf.LINES_OF_CODE;
 
-    public List<Building> getBuildings() {
-        return buildings;
-    }
-
-    public List<Block> getBlocks() {
-        return blocks;
-    }
-
-    public ObjectProperty<Building> hoverBuildingProperty() {
-        return hoverBuilding;
-    }
-
     private ObjectProperty<Building> hoverBuilding = new SimpleObjectProperty<Building>();
-
-    public ObjectProperty<Building> selectedBuildingProperty() {
-        return selectedBuilding;
-    }
-
     private ObjectProperty<Building> selectedBuilding = new SimpleObjectProperty<Building>();
 
     private List<Block> blocks;
@@ -49,54 +33,72 @@ public class Block extends Group implements Structure {
     private Node node;
 
     public Block(Node node){
+        setGround();
+        setData(node);
+    }
+
+    private void setGround(){
         ground = new Box();
         ground.setMaterial(new PhongMaterial(Color.GRAY));
         getChildren().addAll(ground);
-        setData(node);
     }
 
     private void setData(Node node){
         this.node = node;
-        blocks = new LinkedList<>();
 
-        for(int i = 0; i < node.getNodes().size(); i++){
-            Node subNode = node.getNodes().get(i);
-            Block block = new Block(subNode);
-            blocks.add(i, block);
-
-            block.hoverBuildingProperty().addListener((observable, oldHoveredBuilding, newHoveredBuilding) -> {handleBuildingHover(newHoveredBuilding);});
-        }
+        blocks = createBlocks(node.getNodes());
         getChildren().addAll(blocks);
 
-        buildings = new LinkedList<>();
-        for(int i = 0; i < node.getLeaves().size(); i++){
-            Leaf leaf = node.getLeaves().get(i);
-            Building building = new Building(leaf);
-            buildings.add(i, building);
-
-            building.isHoverProperty().addListener( (observable, oldValue, newValue) -> {
-                handleBuildingHover(building, newValue);
-            });
-
-            building.isSelectedProperty().addListener((observable, oldValue, isSelected) -> {
-                if(isSelected) {
-                    handleBuildingSelected(building);
-                }else{
-                    handleBuildingSelected(null);
-                }
-            });
-        }
+        buildings = createBuildings(node.getLeaves());
         getChildren().addAll(buildings);
     }
 
+    private LinkedList<Block> createBlocks(List<Node> nodes){
+        LinkedList<Block> blocks = new LinkedList<>();
 
-    private void handleBuildingHover(Building building, boolean isHover){
-        if(isHover){
-            handleBuildingHover(building);
-        }else{
-            handleBuildingHover(null);
+        for(int i = 0; i < nodes.size(); i++){
+            Node subNode = nodes.get(i);
+            Block block = new Block(subNode);
+            blocks.add(i, block);
+            setBlockListeners(block);
         }
+
+        return blocks;
     }
+
+    private void setBlockListeners(Block block){
+        block.hoverBuildingProperty().addListener((observable, oldHoveredBuilding, newHoveredBuilding) -> {handleBuildingHover(newHoveredBuilding);});
+    }
+
+    private LinkedList<Building> createBuildings(List<Leaf> leaves){
+        LinkedList<Building> buildings = new LinkedList<>();
+        for(int i = 0; i < leaves.size(); i++){
+            Leaf leaf = leaves.get(i);
+            Building building = new Building(leaf);
+            buildings.add(i, building);
+            setBuildingListeners(building);
+        }
+        return buildings;
+    }
+
+    private void setBuildingListeners(Building building){
+        building.isHoverProperty().addListener( (observable, oldValue, newValue) -> {
+            if(newValue){
+                handleBuildingHover(building);
+            }else{
+                handleBuildingHover(null);
+            }
+        });
+
+        building.isSelectedProperty().addListener((observable, oldValue, isSelected) -> {
+            if(isSelected) {
+                handleBuildingSelected(building);
+            }else{
+                handleBuildingSelected(null);
+            }
+        });
+    }
+
     private void handleBuildingHover(Building building){
         hoverBuilding.setValue(building);
     }
@@ -106,6 +108,11 @@ public class Block extends Group implements Structure {
             this.selectedBuilding.getValue().setSelected(false);
         }
         this.selectedBuilding.setValue(selectedBuilding);
+    }
+
+    @Override
+    public String getName() {
+        return node.getName();
     }
 
     public void setSizeMetricName(String sizeMetricName){
@@ -125,6 +132,9 @@ public class Block extends Group implements Structure {
         ground.setTranslateY(-2.5);
     }
 
+    public String getHeightMetricName(){
+        return this.heightMetricName;
+    }
     public void setHeightMetricName(String heightMetricName){
         this.heightMetricName = heightMetricName;
 
@@ -136,11 +146,18 @@ public class Block extends Group implements Structure {
             building.setHeightMetricName(heightMetricName);
         }
     }
-
-    public String getHeightMetricName(){
-        return this.heightMetricName;
+    public void normalizeHeightMetric(double maxHeightMetric, double maxBuildingHeight){
+        for(Block block : blocks){
+            block.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
+        }
+        for(Building building : buildings){
+            building.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
+        }
     }
 
+    public String getColorMetricName(){
+        return this.colorMetricName;
+    }
     public void setColorMetricName(String colorMetricName){
         this.colorMetricName = colorMetricName;
 
@@ -152,13 +169,33 @@ public class Block extends Group implements Structure {
             building.setColorMetricName(colorMetricName);
         }
     }
-
-    public String getColorMetricName(){
-        return this.colorMetricName;
+    public void normalizeColorMetric(double maxColorMetric){
+        for(Block block : blocks){
+            block.normalizeColorMetric(maxColorMetric);
+        }
+        for(Building building : buildings){
+            building.normalizeColorMetric(maxColorMetric);
+        }
     }
 
-    public double getSumMetric(String metricName){
-        double sumMetric = 0;
+
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
+    public List<Block> getBlocks() {
+        return blocks;
+    }
+
+    public ReadOnlyObjectProperty<Building> hoverBuildingProperty() {
+        return hoverBuilding;
+    }
+    public ReadOnlyObjectProperty<Building> selectedBuildingProperty() {
+        return selectedBuilding;
+    }
+
+
+    public double findSumForMetric(String metricName){
         double sumBuildingMetric = 0;
         double sumBlockMetric = 0;
 
@@ -168,16 +205,15 @@ public class Block extends Group implements Structure {
                     .sum();
         }
         if (blocks.size() > 0) {
-            sumBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.getSumMetric(metricName)).sum();
+            sumBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.findSumForMetric(metricName)).sum();
         }
 
-        sumMetric = sumBlockMetric + sumBuildingMetric;
+        double sumMetric = sumBlockMetric + sumBuildingMetric;
 
         return sumMetric;
     }
 
-    public double getMaxMetric(String metricName){
-        double maxMetric = 0;
+    public double findMaxForMetric(String metricName){
         double maxBuildingMetric = 0;
         double maxBlockMetric = 0;
 
@@ -188,44 +224,26 @@ public class Block extends Group implements Structure {
                     .getAsDouble();
         }
         if (blocks.size() > 0) {
-            maxBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.getMaxMetric(metricName)).max().getAsDouble();
+            maxBlockMetric = blocks.stream().mapToDouble(subBlock -> subBlock.findMaxForMetric(metricName)).max().getAsDouble();
         }
 
-        maxMetric = Math.max(maxBuildingMetric, maxBlockMetric);
+        double maxMetric = Math.max(maxBuildingMetric, maxBlockMetric);
 
         return maxMetric;
     }
 
-    public void normalizeHeightMetric(double maxHeightMetric, double maxBuildingHeight){
-        for(Block block : blocks){
-            block.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
-        }
-        for(Building building : buildings){
-            building.normalizeHeightMetric(maxHeightMetric, maxBuildingHeight);
-        }
-    }
-
-    public void normalizeColorMetric(double maxColorMetric){
-        for(Block block : blocks){
-            block.normalizeColorMetric(maxColorMetric);
-        }
-        for(Building building : buildings){
-            building.normalizeColorMetric(maxColorMetric);
-        }
-    }
-
-    public int getTotalBlockCount(){
+    public int findTotalBlockCount(){
         int totalBlockCount = 1;
         for(Block block : blocks){
-            totalBlockCount += block.getTotalBlockCount();
+            totalBlockCount += block.findTotalBlockCount();
         }
         return totalBlockCount;
     }
 
-    public int getTotalBuildingCount(){
+    public int findTotalBuildingCount(){
         int totalBuildingCount = buildings.size();
         for(Block block : blocks){
-            totalBuildingCount += block.getTotalBuildingCount();
+            totalBuildingCount += block.findTotalBuildingCount();
         }
         return totalBuildingCount;
     }
@@ -239,8 +257,4 @@ public class Block extends Group implements Structure {
         return allBuildings;
     }
 
-    @Override
-    public String getName() {
-        return node.getName();
-    }
 }

@@ -29,8 +29,8 @@ public class BlockTest {
         Block block = new Block(node);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(100, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(100, (int)block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int)block.findSumForMetric(Leaf.LINES_OF_CODE));
         assertIsSquare(block);
     }
 
@@ -47,8 +47,8 @@ public class BlockTest {
         Block block = new Block(node);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(100, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(200, (int) block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
         assertIsSquare(block);
     }
 
@@ -66,8 +66,8 @@ public class BlockTest {
         Block block = new Block(node);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(100, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(200, (int) block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
         assertIsSquare(block);
     }
 
@@ -90,10 +90,10 @@ public class BlockTest {
         Block block = new Block(rootNote);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(3, block.getTotalBlockCount());
-        assertEquals(2, block.getTotalBuildingCount());
-        assertEquals(100, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(110, (int) block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(3, block.findTotalBlockCount());
+        assertEquals(2, block.findTotalBuildingCount());
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(110, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
 
         assertIsSquare(block);
     }
@@ -118,10 +118,10 @@ public class BlockTest {
         Block block = new Block(rootNote);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(3, block.getTotalBlockCount());
-        assertEquals(3, block.getTotalBuildingCount());
-        assertEquals(100, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(160, (int) block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(3, block.findTotalBlockCount());
+        assertEquals(3, block.findTotalBuildingCount());
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(160, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
 
         assertIsSquare(block);
     }
@@ -147,10 +147,10 @@ public class BlockTest {
         Block block = new Block(rootNote);
         block.setSizeMetricName(Leaf.LINES_OF_CODE);
 
-        assertEquals(3, block.getTotalBlockCount());
-        assertEquals(6, block.getTotalBuildingCount());
-        assertEquals(200, (int) block.getMaxMetric(Leaf.LINES_OF_CODE));
-        assertEquals(420, (int) block.getSumMetric(Leaf.LINES_OF_CODE));
+        assertEquals(3, block.findTotalBlockCount());
+        assertEquals(6, block.findTotalBuildingCount());
+        assertEquals(200, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(420, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
 
         assertIsSquare(block);
     }
