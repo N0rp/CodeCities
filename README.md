@@ -7,3 +7,4 @@
 * Select build.gradle in the root directory
 
 ## Run Configuration
+test
