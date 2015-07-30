@@ -24,6 +24,7 @@ public class CodeCityApp extends Application {
     public static final String PATH_SOURCE_METER_CLASS = "src/main/resources/log4j-1.2.17-Class.csv";
     public static final String PATH_SOURCE_METER_PACKAGE = "src/main/resources/log4j-1.2.17-Package.csv";
 
+    
     private Node getSourceMeterRootPackages() throws CsvParseException {
         SourceMeterPackageReader sourceMeterPackageReader = new SourceMeterPackageReader(
                 PATH_SOURCE_METER_PACKAGE,
