@@ -75,11 +75,12 @@ public class CityExplorer extends VBox{
             if (empty) {
                 setGraphic(null);
             }else{
-                String metric = "[LoC="+item.getMetric(Leaf.LINES_OF_CODE)+"]";
-                String coordinates = "["+(int)item.getTranslateX()+", "+(int)item.getTranslateY()+", "+(int)item.getTranslateZ()+"]";
-                String size = "["+(int)item.getWidth()+", "+(int)item.getDepth()+"]";
-                label.setText(item.getName()+" "+metric+coordinates+size);
+                refreshLabelName(item);
                 setGraphic(hbox);
+
+                item.getSizeMetricNameProperty().addListener((observable) -> refreshLabelName(item));
+                item.getHeightMetricNameProperty().addListener((observable) -> refreshLabelName(item));
+                item.getColorMetricNameProperty().addListener((observable) -> refreshLabelName(item));
 
                 label.backgroundProperty().bind(Bindings.when(item.isHoverProperty())
                         .then(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)))
@@ -89,6 +90,13 @@ public class CityExplorer extends VBox{
                     updateSelected(newValue);
                 });
             }
+        }
+
+        private void refreshLabelName(Building item){
+            String metric = "[LoC="+item.getMetric(Leaf.LINES_OF_CODE)+"]";
+            String coordinates = "["+(int)item.getTranslateX()+", "+(int)item.getTranslateY()+", "+(int)item.getTranslateZ()+"]";
+            String size = "["+(int)item.getWidth()+", "+(int)item.getDepth()+"]";
+            label.setText(item.getName()+" "+metric+coordinates+size);
         }
     }
 
