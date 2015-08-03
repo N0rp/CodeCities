@@ -2,13 +2,13 @@ package cityview.structure;
 
 import graph.Leaf;
 import graph.Node;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
+import javafx.beans.value.ObservableDoubleValue;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Rectangle;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +24,9 @@ public class Block extends Group implements Structure {
 
     private ObjectProperty<Building> hoverBuilding = new SimpleObjectProperty<Building>();
     private ObjectProperty<Building> selectedBuilding = new SimpleObjectProperty<Building>();
+
+    private DoubleProperty cityWidth = new SimpleDoubleProperty();
+    private DoubleProperty cityDepth = new SimpleDoubleProperty();
 
     private List<Block> blocks;
     private List<Building> buildings;
@@ -97,6 +100,18 @@ public class Block extends Group implements Structure {
                 handleBuildingSelected(null);
             }
         });
+        building.cityWidthProperty().addListener((observable, oldValue, newValue)
+                -> cityWidth.setValue(cityWidth.doubleValue() - oldValue.doubleValue() + newValue.doubleValue()));
+        building.cityDepthProperty().addListener((observable, oldValue, newValue)
+                -> cityDepth.setValue(cityDepth.doubleValue() - oldValue.doubleValue() + newValue.doubleValue()));
+    }
+
+    public double calculateWidth(){
+        return calculateBounds().getWidth();
+    }
+
+    public Rectangle calculateBounds(){
+        return BoundsCalculator.getBlockBounds(this);
     }
 
     private void handleBuildingHover(Building building){
@@ -113,6 +128,26 @@ public class Block extends Group implements Structure {
     @Override
     public String getName() {
         return node.getName();
+    }
+
+    @Override
+    public double getStructureWidth() {
+        return cityWidthProperty().get();
+    }
+
+    @Override
+    public ObservableDoubleValue cityWidthProperty() {
+        return cityWidthProperty();
+    }
+
+    @Override
+    public double getStructureDepth() {
+        return cityDepthProperty().get();
+    }
+
+    @Override
+    public ObservableDoubleValue cityDepthProperty() {
+        return cityDepthProperty();
     }
 
     public String getSizeMetricName(){

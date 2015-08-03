@@ -69,7 +69,7 @@ public class CodeCitySceneBuilder {
         root.getChildren().addAll(cityOrganizer);
 
         // Use a SubScene
-        SubScene subScene = new SubScene(root, 300, 300, true, SceneAntialiasing.BALANCED);
+        SubScene subScene = new SubScene(root, 600, 300, true, SceneAntialiasing.BALANCED);
         subScene.setFill(Color.ALICEBLUE);
         subScene.setCamera(cameraAndInteractionManager.getCamera());
 

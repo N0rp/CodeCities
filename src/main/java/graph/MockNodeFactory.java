@@ -26,14 +26,14 @@ public class MockNodeFactory {
     }
 
     public static Node getSimpleDoublePackage(){
-        Leaf buildingA1 = new Leaf("foo", createMetricMap(700, 100, 0));
-        Leaf buildingA2 = new Leaf("bar", createMetricMap(400, 50, 50));
-        Leaf buildingA3 = new Leaf("gaa", createMetricMap(1000, 10, 100));
+        Leaf buildingA1 = new Leaf("A1", createMetricMap(700, 100, 0));
+        Leaf buildingA2 = new Leaf("A2", createMetricMap(400, 50, 50));
+        Leaf buildingA3 = new Leaf("A3", createMetricMap(1000, 10, 100));
         Node packA = new Node("GroupA", buildingA1, buildingA2, buildingA3);
 
-        Leaf buildingB1 = new Leaf("foo", createMetricMap(700, 200, 100));
-        Leaf buildingB2 = new Leaf("bar", createMetricMap(400, 70, 0));
-        Leaf buildingB3 = new Leaf("gaa", createMetricMap(1000, 30, 50));
+        Leaf buildingB1 = new Leaf("B1", createMetricMap(700, 200, 100));
+        Leaf buildingB2 = new Leaf("B2", createMetricMap(400, 70, 0));
+        Leaf buildingB3 = new Leaf("B3", createMetricMap(1000, 30, 50));
         Node packB = new Node("GroupB", buildingB1, buildingB2, buildingB3);
 
 

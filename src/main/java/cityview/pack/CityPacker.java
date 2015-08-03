@@ -10,8 +10,6 @@ public interface CityPacker {
     /**
      * Arrange just the buildings inside the block
      *
-     * @param block
-     * @param size
      */
-    void fitBlockIntoSize(Block block, double size);
+    void fitBlock();
 }

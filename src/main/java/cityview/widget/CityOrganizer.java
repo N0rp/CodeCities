@@ -60,9 +60,8 @@ public class CityOrganizer extends Group{
     }
 
     private void packCity(){
-        CityPacker packer = new BasicCityPacker();
-        double blockSize = rootBlock.findSumForMetric(rootBlock.getSizeMetricName());
-        packer.fitBlockIntoSize(rootBlock, blockSize);
+        CityPacker packer = new BasicCityPacker(rootBlock, 0);
+        packer.fitBlock();
         int foo = 5;
     }
 
