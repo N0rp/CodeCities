@@ -204,7 +204,7 @@ public class Block extends Group implements Structure {
 
         if(buildings.size() > 0) {
             sumBuildingMetric = buildings.stream().mapToDouble(
-                    building -> building.getLeaf().getMetric(metricName))
+                    building -> building.getModel().getMetric(metricName))
                     .sum();
         }
         if (blocks.size() > 0) {
@@ -222,7 +222,7 @@ public class Block extends Group implements Structure {
 
         if(buildings.size() > 0) {
             maxBuildingMetric = buildings.stream().mapToDouble(
-                    building -> building.getLeaf().getMetric(metricName))
+                    building -> building.getModel().getMetric(metricName))
                     .max()
                     .getAsDouble();
         }

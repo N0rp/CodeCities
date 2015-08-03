@@ -3,7 +3,10 @@ package cityview.structure;
 import graph.Leaf;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -15,47 +18,23 @@ import javafx.scene.text.Text;
  */
 public class Building extends Group implements Structure {
 
-    private double maxColorMetric;
-
-    private String sizeMetricName;
-    private String heightMetricName;
-    private String colorMetricName;
-
-    public Leaf getLeaf() {
-        return leaf;
-    }
-
-    private Box buildingBox;
-    private Text buildingLabel;
-
-    private Leaf leaf;
-
-    public Boolean getIsHover() {
-        return isHover.get();
-    }
-
-    public ObservableBooleanValue isHoverProperty() {
-        return isHover;
-    }
-
-    public boolean isSelected(){
-        return isSelectedProperty().get();
-    }
-
-    public void setSelected(boolean isSelected){
-        this.isSelected.setValue(isSelected);
-    }
-
-    public ObservableBooleanValue isSelectedProperty() {
-        return isSelected;
-    }
+    private StringProperty sizeMetricNameProperty = new SimpleStringProperty();
+    private StringProperty heightMetricNameProperty = new SimpleStringProperty();
+    private StringProperty colorMetricNameProperty = new SimpleStringProperty();
 
     private BooleanProperty isHover = new SimpleBooleanProperty();
     private BooleanProperty isSelected = new SimpleBooleanProperty();
 
-    public Building(Leaf leaf){
+    private double maxColorMetric;
+
+    private Box buildingBox;
+    private Text buildingLabel;
+
+    private Leaf model;
+
+    public Building(Leaf model){
         initChildren();
-        setData(leaf);
+        setData(model);
         setSizeMetricName(Leaf.LINES_OF_CODE);
         setHeightMetricName(Leaf.LINES_OF_CODE);
         setColorMetricName(Leaf.LINES_OF_CODE);
@@ -71,7 +50,7 @@ public class Building extends Group implements Structure {
         setOnMouseExited(me -> {
             isHover.set(false);
         });
-        setOnMouseClicked(me ->{
+        setOnMouseClicked(me -> {
             setSelected(true);
         });
 
@@ -98,92 +77,50 @@ public class Building extends Group implements Structure {
         }
     }
 
-    private void setData(Leaf leaf){
-        this.leaf = leaf;
-        this.buildingLabel.setText(leaf.getName());
+    private void setData(Leaf model){
+        this.model = model;
+        this.buildingLabel.setText(model.getName());
     }
 
     public String getName(){
-        return leaf.getName();
+        return model.getName();
     }
 
-    public void setSizeMetricName(String sizeMetricName){
-        this.sizeMetricName = sizeMetricName;
-        double size = getMetric(sizeMetricName);
-        double width = Math.sqrt(size);
-        setDepth(width);
-        setWidth(width);
-    }
 
-    public void setHeightMetricName(String heightMetricName){
-        this.heightMetricName = heightMetricName;
-        double height = getMetric(heightMetricName);
-        setHeight(height);
-    }
 
-    public void setColorMetricName(String colorMetricName){
-        this.colorMetricName = colorMetricName;
-    }
 
-    public double getSizeMetric(){
-        return leaf.getMetric(sizeMetricName);
+    public double getMetric(String metricName){
+        double metric = model.getMetric(metricName);
+        if(metric <= 0){
+            metric = 1;
+        }
+        return metric;
     }
-
-    public double getHeightMetric(){ return leaf.getMetric(heightMetricName); }
+    public double getHeightMetric(){ return model.getMetric(getHeightMetricName()); }
 
     public double getColorMetric(){
-        return leaf.getMetric(colorMetricName);
+        return model.getMetric(getColorMetricName());
     }
 
     public void normalizeHeightMetric(double maxHeightMetric, double maxBuildingHeight){
         double normalizedHeight = getHeightMetric() / maxHeightMetric * maxBuildingHeight;
         setHeight(normalizedHeight);
     }
-
-
     public void normalizeColorMetric(double maxColorMetric){
         this.maxColorMetric = maxColorMetric;
-        this.buildingBox.setMaterial(new PhongMaterial(getBuildingColor(leaf.getMetric(colorMetricName), maxColorMetric)));
+        this.buildingBox.setMaterial(new PhongMaterial(getBuildingColor(model.getMetric(getColorMetricName()), maxColorMetric)));
     }
-
-    @Override
-    public String toString(){
-        String result = "Building [";
-
-        result += "Width="+(int)getWidth();
-        result += ", Depth="+(int)getDepth();
-        result += ", SizeMetric="+sizeMetricName+":"+(int)getSizeMetric();
-
-        result += "]";
-        return result;
+    private Color getBuildingColor(double value, double max){
+        double middleStart = max / 3;
+        double middleEnd = middleStart * 2;
+        if(value < middleStart){
+            return Color.GREEN;
+        }else if(value < middleEnd){
+            return Color.ORANGE;
+        }else{
+            return Color.RED;
+        }
     }
-
-    public double getMetric(String metricName){
-        return leaf.getMetric(metricName);
-    }
-
-    public double getWidth(){
-        return buildingBox.getWidth();
-    }
-
-    private void setWidth(double width){
-        buildingBox.setWidth(width);
-    }
-
-    private void setDepth(double depth){
-        buildingBox.setDepth(depth);
-    }
-
-    public double getDepth(){
-        return buildingBox.getDepth();
-    }
-
-    private void setHeight(double height){
-        buildingBox.setHeight(height);
-        buildingBox.setTranslateY(height/2);
-    }
-
-
 
     public void resizeToDepth(double newDepth){
         double size = getDepth() * getWidth();
@@ -201,16 +138,113 @@ public class Building extends Group implements Structure {
         setDepth(newHeight);
     }
 
-    private Color getBuildingColor(double value, double max){
-        double middleStart = max / 3;
-        double middleEnd = middleStart * 2;
-        if(value < middleStart){
-            return Color.GREEN;
-        }else if(value < middleEnd){
-            return Color.ORANGE;
-        }else{
-            return Color.RED;
-        }
+    @Override
+    public String toString(){
+        String result = "Building ["+getName();
+
+        result += " (x="+(int)getTranslateX();
+        result +=";y="+(int)getTranslateZ();
+        result +=";z="+(int)getTranslateZ()+")";
+        result += " (Width="+(int)getWidth();
+        result += ";Height="+(int)getHeight();
+        result += ";Depth="+(int)getDepth()+")";
+        result += ", Size="+getSizeMetricName()+":"+(int)getSizeMetric();
+        result += ", Height="+getHeightMetricName()+":"+(int)getHeightMetric();
+        result += ", Color="+getColorMetricName()+":"+(int)getColorMetric();
+
+        result += "]";
+        return result;
+    }
+
+
+    public Leaf getModel() {
+        return model;
+    }
+
+
+    public double getWidth(){
+        return buildingBox.getWidth();
+    }
+    private void setWidth(double width){
+        buildingBox.setWidth(width);
+    }
+
+
+    public double getHeight(){
+        return buildingBox.getHeight();
+    }
+    private void setHeight(double height){
+        buildingBox.setHeight(height);
+        buildingBox.setTranslateY(height / 2);
+    }
+
+
+    public double getDepth(){
+        return buildingBox.getDepth();
+    }
+    private void setDepth(double depth){
+        buildingBox.setDepth(depth);
+    }
+
+
+    public ObservableBooleanValue isHoverProperty() {
+        return isHover;
+    }
+    public Boolean getIsHover() {
+        return isHover.get();
+    }
+
+
+    public ObservableBooleanValue isSelectedProperty() {
+        return isSelected;
+    }
+    public boolean isSelected(){
+        return isSelectedProperty().get();
+    }
+    public void setSelected(boolean isSelected){
+        this.isSelected.setValue(isSelected);
+    }
+
+
+    public ObservableStringValue getSizeMetricNameProperty(){
+        return sizeMetricNameProperty;
+    }
+    public String getSizeMetricName(){
+        return sizeMetricNameProperty.getValue();
+    }
+    public void setSizeMetricName(String sizeMetricName){
+        sizeMetricNameProperty.setValue(sizeMetricName);
+        double size = getMetric(sizeMetricName);
+        double width = Math.sqrt(size);
+        setDepth(width);
+        setWidth(width);
+    }
+    public double getSizeMetric(){
+        return model.getMetric(getSizeMetricName());
+    }
+
+
+    public ObservableStringValue getHeightMetricNameProperty(){
+        return heightMetricNameProperty;
+    }
+    public String getHeightMetricName(){
+        return heightMetricNameProperty.getValue();
+    }
+    public void setHeightMetricName(String heightMetricName){
+        heightMetricNameProperty.setValue(heightMetricName);
+        double height = getMetric(heightMetricName);
+        setHeight(height);
+    }
+
+
+    public ObservableStringValue getColorMetricNameProperty(){
+        return colorMetricNameProperty;
+    }
+    public String getColorMetricName(){
+        return colorMetricNameProperty.getValue();
+    }
+    public void setColorMetricName(String colorMetricName){
+        colorMetricNameProperty.setValue(colorMetricName);
     }
 
 }

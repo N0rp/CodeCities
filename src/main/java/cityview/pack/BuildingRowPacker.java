@@ -50,11 +50,9 @@ public class BuildingRowPacker {
 
         double currentX = 0;
         for(Building building : buildingsInRow){
-            building.setLayoutX(currentX);
             double relativeWidth = building.getWidth() / currentWidth;
             double newWidth = relativeWidth * rowWidth;
             building.resizeToWidth(newWidth);
-            currentX += newWidth;
         }
     }
 }
