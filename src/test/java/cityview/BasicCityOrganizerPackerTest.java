@@ -28,8 +28,8 @@ public class BasicCityOrganizerPackerTest {
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
         Block block = new Block(node);
 
-        CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.fitBlockIntoSize(block, 100);
+        CityPacker cityPacker = new BasicCityPacker(block, 0);
+        cityPacker.fitBlock();
 
         assertIsSquare(block);
     }
@@ -46,8 +46,8 @@ public class BasicCityOrganizerPackerTest {
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
         Block block = new Block(node);
 
-        CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.fitBlockIntoSize(block, 200);
+        CityPacker cityPacker = new BasicCityPacker(block, 0);
+        cityPacker.fitBlock();
 
         assertIsSquare(block);
     }
@@ -65,8 +65,8 @@ public class BasicCityOrganizerPackerTest {
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
         Block block = new Block(node);
 
-        CityPacker cityPacker = new BasicCityPacker();
-        cityPacker.fitBlockIntoSize(block, 100);
+        CityPacker cityPacker = new BasicCityPacker(block, 0);
+        cityPacker.fitBlock();
 
         assertIsRectangle(block, 10, 20);
     }

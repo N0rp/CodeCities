@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableBooleanValue;
+import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableStringValue;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -82,11 +83,30 @@ public class Building extends Group implements Structure {
         this.buildingLabel.setText(model.getName());
     }
 
+    @Override
     public String getName(){
         return model.getName();
     }
 
+    @Override
+    public double getStructureWidth() {
+        return cityWidthProperty().doubleValue();
+    }
 
+    @Override
+    public ObservableDoubleValue cityWidthProperty() {
+        return buildingBox.widthProperty();
+    }
+
+    @Override
+    public double getStructureDepth() {
+        return cityDepthProperty().doubleValue();
+    }
+
+    @Override
+    public ObservableDoubleValue cityDepthProperty() {
+        return buildingBox.depthProperty();
+    }
 
 
     public double getMetric(String metricName){

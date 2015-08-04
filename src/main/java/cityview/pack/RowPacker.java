@@ -8,19 +8,36 @@ import java.util.List;
 /**
  * Created by Richard on 7/26/2015.
  */
-public class BuildingRowPacker {
+public class RowPacker {
 
-    public double getMaxDepth(List<Building> buildingsInRow){
-        Building maxDepthBuilding = buildingsInRow.stream().max((buildingA, buildingB) -> Double.compare(buildingA.getDepth(), buildingB.getDepth())).get();
-        return maxDepthBuilding.getDepth();
+    private List<Building> buildingsInRow;
+    private double depth;
+    private double rowWidth;
+    private double rowZ;
+
+    public RowPacker(List<Building> buildingsInRow, double rowWidth, double rowZ){
+        this.buildingsInRow = buildingsInRow;
+        this.rowWidth = rowWidth;
+        this.rowZ = rowZ;
+
+        this.depth = calculateMaxDepth();
     }
 
-    public void resizeBuildings(List<Building> buildingsInRow, double maxWidth){
-        resizeToMaxBuildingHeight(buildingsInRow);
-        resizeToContainerWidth(buildingsInRow, maxWidth);
+    public double getRowDepth(){
+        return depth;
     }
 
-    public void arrangeBuildings(List<Building> buildingsInRow, double rowZ){
+    private double calculateMaxDepth(){
+        Building maxDepthStructure = buildingsInRow.stream().max((buildingA, buildingB) -> Double.compare(buildingA.getStructureDepth(), buildingB.getStructureDepth())).get();
+        return maxDepthStructure.getStructureDepth();
+    }
+
+    public void resizeBuildings(){
+        resizeToMaxBuildingHeight();
+        resizeToContainerWidth();
+    }
+
+    public void arrangeBuildings(){
         double buildingX = 0;
         for(Building building : buildingsInRow){
             building.setTranslateX(building.getWidth()/2 + buildingX);
@@ -30,14 +47,13 @@ public class BuildingRowPacker {
         }
     }
 
-    private void resizeToMaxBuildingHeight(List<Building> buildingsInRow){
-        double maxDepth = getMaxDepth(buildingsInRow);
+    private void resizeToMaxBuildingHeight(){
         for(Building building : buildingsInRow){
-            building.resizeToDepth(maxDepth);
+            building.resizeToDepth(depth);
         }
     }
 
-    private void resizeToContainerWidth(List<Building> buildingsInRow, double rowWidth){
+    private void resizeToContainerWidth(){
         double currentWidth = 0;
         Building previousBuilding = null;
         for(Building building : buildingsInRow){
