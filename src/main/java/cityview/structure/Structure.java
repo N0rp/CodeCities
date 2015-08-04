@@ -10,8 +10,8 @@ public interface Structure {
     String getName();
 
     double getStructureWidth();
-    ObservableDoubleValue cityWidthProperty();
+    ObservableDoubleValue structureWidthProperty();
 
     double getStructureDepth();
-    ObservableDoubleValue cityDepthProperty();
+    ObservableDoubleValue structureDepthProperty();
 }

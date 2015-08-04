@@ -11,25 +11,30 @@ import java.util.List;
 public class RowPacker {
 
     private List<Building> buildingsInRow;
-    private double depth;
     private double rowWidth;
     private double rowZ;
 
-    public RowPacker(List<Building> buildingsInRow, double rowWidth, double rowZ){
-        this.buildingsInRow = buildingsInRow;
-        this.rowWidth = rowWidth;
-        this.rowZ = rowZ;
+    private double depth;
 
-        this.depth = calculateMaxDepth();
+    RowPacker(RowPackerFactory rowPackerFactory){
+        this.buildingsInRow = rowPackerFactory.buildingsInRow.getFittingStructures();
+        this.rowWidth = rowPackerFactory.rowWidth;
+        this.rowZ = rowPackerFactory.rowZ;
+
+        this.depth = calculateMaxDepth(buildingsInRow);
     }
 
     public double getRowDepth(){
         return depth;
     }
 
-    private double calculateMaxDepth(){
-        Building maxDepthStructure = buildingsInRow.stream().max((buildingA, buildingB) -> Double.compare(buildingA.getStructureDepth(), buildingB.getStructureDepth())).get();
-        return maxDepthStructure.getStructureDepth();
+    private double calculateMaxDepth(List<Building> buildingsInRow){
+        double maxDepth = 0;
+        if(buildingsInRow.size() > 0) {
+            Building maxDepthStructure = buildingsInRow.stream().max((buildingA, buildingB) -> Double.compare(buildingA.getStructureDepth(), buildingB.getStructureDepth())).get();
+            maxDepth = maxDepthStructure.getStructureDepth();
+        }
+        return maxDepth;
     }
 
     public void resizeBuildings(){

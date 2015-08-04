@@ -27,10 +27,10 @@ public class BlockTest {
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
 
         Block block = new Block(node);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
-        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(100, (int)block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(100, (int)block.findSumForMetric(Leaf.LINES_OF_CODES));
         assertIsSquare(block);
     }
 
@@ -45,10 +45,10 @@ public class BlockTest {
         Leaf[] leaves = new Leaf[]{leafA, leafB};
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
         Block block = new Block(node);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
-        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODES));
         assertIsSquare(block);
     }
 
@@ -64,10 +64,10 @@ public class BlockTest {
         Leaf[] leaves = new Leaf[]{leafA, leafB, leafC};
         Node node = new Node("NodeAlpha", Arrays.asList(leaves));
         Block block = new Block(node);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
-        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(200, (int) block.findSumForMetric(Leaf.LINES_OF_CODES));
         assertIsSquare(block);
     }
 
@@ -88,12 +88,12 @@ public class BlockTest {
         rootNote.addSubNodes(nodeA, nodeB);
 
         Block block = new Block(rootNote);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
         assertEquals(3, block.findTotalBlockCount());
         assertEquals(2, block.findTotalBuildingCount());
-        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(110, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(110, (int) block.findSumForMetric(Leaf.LINES_OF_CODES));
 
         assertIsSquare(block);
     }
@@ -116,12 +116,12 @@ public class BlockTest {
         rootNote.addSubNodes(nodeA, nodeB);
 
         Block block = new Block(rootNote);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
         assertEquals(3, block.findTotalBlockCount());
         assertEquals(3, block.findTotalBuildingCount());
-        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(160, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(100, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(160, (int) block.findSumForMetric(Leaf.LINES_OF_CODES));
 
         assertIsSquare(block);
     }
@@ -145,12 +145,12 @@ public class BlockTest {
         rootNote.addSubNodes(nodeA, nodeB);
 
         Block block = new Block(rootNote);
-        block.setSizeMetricName(Leaf.LINES_OF_CODE);
+        block.setSizeMetricName(Leaf.LINES_OF_CODES);
 
         assertEquals(3, block.findTotalBlockCount());
         assertEquals(6, block.findTotalBuildingCount());
-        assertEquals(200, (int) block.findMaxForMetric(Leaf.LINES_OF_CODE));
-        assertEquals(420, (int) block.findSumForMetric(Leaf.LINES_OF_CODE));
+        assertEquals(200, (int) block.findMaxForMetric(Leaf.LINES_OF_CODES));
+        assertEquals(420, (int) block.findSumForMetric(Leaf.LINES_OF_CODES));
 
         assertIsSquare(block);
     }

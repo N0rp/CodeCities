@@ -3,6 +3,9 @@ package core;
 import cityview.widget.CityExplorer;
 import cityview.widget.CityOrganizer;
 import cityview.widget.CityOverlay;
+import facade.NodeFacade;
+import facade.SourceMeterData;
+import facade.SourceMeterDataFactory;
 import graph.MockNodeFactory;
 import graph.Node;
 import javafx.application.Application;
@@ -26,20 +29,19 @@ public class CodeCityApp extends Application {
 
 
 
-    private Node getSourceMeterRootPackages() throws CsvParseException {
-        SourceMeterPackageReader sourceMeterPackageReader = new SourceMeterPackageReader(
-                PATH_SOURCE_METER_PACKAGE,
-                PATH_SOURCE_METER_CLASS,
-                PATH_SOURCE_METER_METHOD);
-        Node nodes = sourceMeterPackageReader.createCityPackages();
 
-        return nodes;
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = CodeCitySceneBuilder.buildScene(MockNodeFactory.getSimplePackage());
-        //Scene scene = CodeCitySceneBuilder.buildScene(getSourceMeterRootPackages());
+        NodeFacade nodeFacade = new NodeFacade();
+        SourceMeterData sourceMeterData = SourceMeterDataFactory
+                .buildWithPackage(PATH_SOURCE_METER_PACKAGE)
+                .addClass(PATH_SOURCE_METER_CLASS)
+                .addMethod(PATH_SOURCE_METER_METHOD)
+                .create();
+
+        Scene scene = CodeCitySceneBuilder.buildScene(MockNodeFactory.getMediumSizePackage());
+        //Scene scene = CodeCitySceneBuilder.buildScene(nodeFacade.getNodeFromSourceMeter(sourceMeterData));
 
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);

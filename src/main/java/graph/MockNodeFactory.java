@@ -10,9 +10,9 @@ public class MockNodeFactory {
 
     public static Map<String, Double> createMetricMap(double loc, double mcc, double nl){
         Map<String, Double> metricMap = new HashMap<>();
-        metricMap.put(Leaf.LINES_OF_CODE, loc);
-        metricMap.put(Leaf.MC_CABE, mcc);
-        metricMap.put(Leaf.NESTING_LEVEL, nl);
+        metricMap.put(Leaf.LINES_OF_CODES, loc);
+        metricMap.put(Leaf.MC_CABES, mcc);
+        metricMap.put(Leaf.NESTING_LEVELS, nl);
 
         return metricMap;
     }
@@ -26,9 +26,9 @@ public class MockNodeFactory {
     }
 
     public static Node getSimpleDoublePackage(){
-        Leaf buildingA1 = new Leaf("A1", createMetricMap(700, 100, 0));
-        Leaf buildingA2 = new Leaf("A2", createMetricMap(400, 50, 50));
-        Leaf buildingA3 = new Leaf("A3", createMetricMap(1000, 10, 100));
+        Leaf buildingA1 = new Leaf("A1", createMetricMap(100, 100, 0));
+        Leaf buildingA2 = new Leaf("A2", createMetricMap(200, 50, 50));
+        Leaf buildingA3 = new Leaf("A3", createMetricMap(300, 10, 100));
         Node packA = new Node("GroupA", buildingA1, buildingA2, buildingA3);
 
         Leaf buildingB1 = new Leaf("B1", createMetricMap(700, 200, 100));

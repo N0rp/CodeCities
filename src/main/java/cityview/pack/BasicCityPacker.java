@@ -7,6 +7,7 @@ import cityview.structure.Structure;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 /**
  * Created by Richard on 7/22/2015.
@@ -14,84 +15,69 @@ import java.util.ListIterator;
 public class BasicCityPacker implements CityPacker {
 
     private Block rootBlock;
+    private double currentX;
     private double currentZ;
 
     public BasicCityPacker(Block block, double currentZ){
         this.rootBlock = block;
+        this.currentX = 0;
         this.currentZ = currentZ;
     }
 
     @Override
     public void fitBlock(){
-        fitBlockIntoSize(rootBlock);
-    }
-
-    private void fitBlockIntoSize(Block block){
-        double maxSize = block.findSumForMetric(block.getSizeMetricName());
+        double maxSize = rootBlock.findSumForMetric(rootBlock.getSizeMetricName());
         double maxWidth = Math.sqrt(maxSize);
-        //fitSubBlocks(block.getBlocks(), maxSizeMetric);
+        fitBlock(rootBlock, maxWidth);
+    }
+
+    private void fitBlock(Block block, double maxWidth){
+        List<RowStructures<Block>> blockRows = cutIntoRows(block.getBlocks(), maxWidth);
+
+        for(RowStructures<Block> blockRow : blockRows){
+            fitBlockStructures(blockRow, maxWidth);
+            double z = blockRow.getFittingStructures().get(0).getStructureDepth();
+            currentZ += z;
+        }
+        double blockDepth = block.getStructureDepth();
         fitBuildings(block.getBuildings(), maxWidth);
+        blockDepth = block.getStructureDepth();
     }
 
-    private <T extends Structure> void fitStructures(List<T> structures, double maxWidth){
-        List<T> remainingStructures = new LinkedList<>(structures);
-
-        for(ListIterator<T> iterator = remainingStructures.listIterator(); iterator.hasNext();){
-            T structure = iterator.next();
-            iterator.remove();
-
-            List<T> structuresInRow = removeStructuresThatFitIntoWidth(iterator, maxWidth - structure.getStructureWidth());
-            structuresInRow.add(0, structure);
-            // arrange and resize
-            if(structure instanceof Block){
-                fitBlocks(structures, maxWidth);
-            }else if(structure instanceof Building){
-                fitBuildings(structures, maxWidth);
-            }
-
-            //double maxDepth = rowPacker.getMaxDepth(structuresInRow);
-            //currentDepth += maxDepth;
+    private void fitBlockStructures(RowStructures<Block> blockRow, double maxWidth){
+        for(Block block : blockRow.getFittingStructures()){
+            fitBlock(block, maxWidth);
         }
     }
 
+    private void fitBuildings(List<Building> buildings, double maxWidth){
+        List<RowStructures<Building>> buildingRows = cutIntoRows(buildings, maxWidth);
 
-    private <T extends Structure> void fitBlocks(List<T> blocks, double maxWidth){
-        for(T genericBlock : blocks){
-            Block block = (Block)genericBlock;
-            fitBlockIntoSize(block);
+        for(RowStructures<Building> buildingRow : buildingRows){
+            fitBuildingStructures(buildingRow, maxWidth);
         }
     }
 
-    private <T extends Structure> void fitBuildings(List<T> genericBuildings, double maxWidth){
-        List<Building> buildings = new LinkedList<>();
-        for(T genericBuilding : genericBuildings){
-            buildings.add((Building)genericBuilding);
-        }
-        RowPacker rowPacker = new RowPacker(buildings, maxWidth, currentZ);
+    private void fitBuildingStructures(RowStructures<Building> blockRow, double maxWidth){
+        RowPacker rowPacker = RowPackerFactory.Create()
+                .buildingsInRow(blockRow).rowWidth(maxWidth).rowZ(currentZ).build();
         rowPacker.resizeBuildings();
         rowPacker.arrangeBuildings();
 
-        currentZ += rowPacker.getRowDepth();
+        double rowDepth = rowPacker.getRowDepth();
+        currentZ += rowDepth;
     }
 
-    private <T extends Structure> List<T> removeStructuresThatFitIntoWidth(ListIterator<T> followingStructures, double maxWidth){
-        List<T> fittingStructures = new LinkedList<>();
-        while(followingStructures.hasNext()){
-            T nextStructure = followingStructures.next();
+    private <T extends Structure> List<RowStructures<T>> cutIntoRows(List<T> structures, double maxWidth){
+        List<RowStructures<T>> result = new LinkedList<>();
+        List<T> remainingStructures = new LinkedList<>(structures);
 
-            double structureWidth = nextStructure.getStructureWidth();
-            if(structureWidth <= maxWidth){
-                maxWidth -= structureWidth;
-                fittingStructures.add(nextStructure);
-                followingStructures.remove();
-            }else{
-                // reset iterator
-                followingStructures.previous();
-                break;
-            }
+        for(ListIterator<T> iterator = remainingStructures.listIterator(); iterator.hasNext();){
+            RowStructures<T> blockRow = new RowStructures<>(
+                    RowStructures.removeStructuresThatFitIntoWidth(iterator, maxWidth));
+            result.add(blockRow);
         }
-
-        return fittingStructures;
+        return result;
     }
 
 }

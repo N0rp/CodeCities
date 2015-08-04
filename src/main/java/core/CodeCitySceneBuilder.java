@@ -23,7 +23,6 @@ public class CodeCitySceneBuilder {
     private CityExplorer explorer;
 
     private CodeCitySceneBuilder(){
-
     }
 
     public static Scene buildScene(Node node) throws Exception {
@@ -78,8 +77,5 @@ public class CodeCitySceneBuilder {
 
         return subScene;
     }
-
-
-
 
 }

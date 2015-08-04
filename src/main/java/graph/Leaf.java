@@ -9,9 +9,9 @@ import java.util.Set;
  */
 public class Leaf {
 
-    public final static String LINES_OF_CODE = "LinesOfCode";
-    public final static String MC_CABE = "McCabe";
-    public final static String NESTING_LEVEL = "NestingLevel";
+    public final static String LINES_OF_CODES = "LinesOfCode";
+    public final static String MC_CABES = "McCabe";
+    public final static String NESTING_LEVELS = "NestingLevel";
 
     private Map<String, Double> nameToMetric;
 

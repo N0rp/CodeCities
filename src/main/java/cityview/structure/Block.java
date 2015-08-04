@@ -18,9 +18,9 @@ import java.util.List;
  */
 public class Block extends Group implements Structure {
 
-    private String sizeMetricName = Leaf.LINES_OF_CODE;
-    private String heightMetricName = Leaf.LINES_OF_CODE;
-    private String colorMetricName = Leaf.LINES_OF_CODE;
+    private String sizeMetricName;
+    private String heightMetricName;
+    private String colorMetricName;
 
     private ObjectProperty<Building> hoverBuilding = new SimpleObjectProperty<Building>();
     private ObjectProperty<Building> selectedBuilding = new SimpleObjectProperty<Building>();
@@ -100,9 +100,9 @@ public class Block extends Group implements Structure {
                 handleBuildingSelected(null);
             }
         });
-        building.cityWidthProperty().addListener((observable, oldValue, newValue)
+        building.structureWidthProperty().addListener((observable, oldValue, newValue)
                 -> cityWidth.setValue(cityWidth.doubleValue() - oldValue.doubleValue() + newValue.doubleValue()));
-        building.cityDepthProperty().addListener((observable, oldValue, newValue)
+        building.structureDepthProperty().addListener((observable, oldValue, newValue)
                 -> cityDepth.setValue(cityDepth.doubleValue() - oldValue.doubleValue() + newValue.doubleValue()));
     }
 
@@ -132,22 +132,22 @@ public class Block extends Group implements Structure {
 
     @Override
     public double getStructureWidth() {
-        return cityWidthProperty().get();
+        return structureWidthProperty().get();
     }
 
     @Override
-    public ObservableDoubleValue cityWidthProperty() {
-        return cityWidthProperty();
+    public ObservableDoubleValue structureWidthProperty() {
+        return cityWidth;
     }
 
     @Override
     public double getStructureDepth() {
-        return cityDepthProperty().get();
+        return structureDepthProperty().get();
     }
 
     @Override
-    public ObservableDoubleValue cityDepthProperty() {
-        return cityDepthProperty();
+    public ObservableDoubleValue structureDepthProperty() {
+        return cityDepth;
     }
 
     public String getSizeMetricName(){

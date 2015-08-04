@@ -93,10 +93,9 @@ public class CityExplorer extends VBox{
         }
 
         private void refreshLabelName(Building item){
-            String metric = "[LoC="+item.getMetric(Leaf.LINES_OF_CODE)+"]";
             String coordinates = "["+(int)item.getTranslateX()+", "+(int)item.getTranslateY()+", "+(int)item.getTranslateZ()+"]";
             String size = "["+(int)item.getWidth()+", "+(int)item.getDepth()+"]";
-            label.setText(item.getName()+" "+metric+coordinates+size);
+            label.setText(item.getName()+" "+coordinates+size);
         }
     }
 

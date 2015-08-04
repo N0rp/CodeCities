@@ -36,9 +36,6 @@ public class Building extends Group implements Structure {
     public Building(Leaf model){
         initChildren();
         setData(model);
-        setSizeMetricName(Leaf.LINES_OF_CODE);
-        setHeightMetricName(Leaf.LINES_OF_CODE);
-        setColorMetricName(Leaf.LINES_OF_CODE);
     }
 
     private void initChildren(){
@@ -90,21 +87,21 @@ public class Building extends Group implements Structure {
 
     @Override
     public double getStructureWidth() {
-        return cityWidthProperty().doubleValue();
+        return structureWidthProperty().doubleValue();
     }
 
     @Override
-    public ObservableDoubleValue cityWidthProperty() {
+    public ObservableDoubleValue structureWidthProperty() {
         return buildingBox.widthProperty();
     }
 
     @Override
     public double getStructureDepth() {
-        return cityDepthProperty().doubleValue();
+        return structureDepthProperty().doubleValue();
     }
 
     @Override
-    public ObservableDoubleValue cityDepthProperty() {
+    public ObservableDoubleValue structureDepthProperty() {
         return buildingBox.depthProperty();
     }
 
